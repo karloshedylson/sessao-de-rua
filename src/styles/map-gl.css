@@ -1,0 +1,101 @@
+/* mapa real (MapLibre) */
+.map-gl {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: #ede3cf;
+}
+.map-gl .maplibregl-map {
+  font-family: var(--font-archivo), system-ui, sans-serif;
+}
+.map-gl .maplibregl-canvas {
+  outline: none;
+}
+.map-gl .maplibregl-ctrl-scale {
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #1b1514;
+  background: rgba(255, 253, 248, 0.85);
+  border-color: #1b1514;
+}
+.map-gl .maplibregl-ctrl-attrib {
+  font-size: 10.5px;
+}
+/* controles e avisos sobre o mapa ficam acima do canvas e dos marcadores */
+.mapctl,
+.maphint,
+.mapfilm {
+  z-index: 5;
+}
+
+/* pino de cinema (marcador HTML) */
+.gl-pin {
+  position: relative;
+  width: 32px;
+  height: 40px;
+  cursor: pointer;
+}
+.gl-pin:focus-visible {
+  outline: 2px solid #f4b53f;
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+.gl-pin-svg {
+  display: block;
+  overflow: visible;
+}
+.gl-pin-svg text {
+  font-family: var(--font-archivo), system-ui, sans-serif;
+}
+.gl-pin:hover .pin-b {
+  fill: #b81d24;
+}
+.gl-pin-lb {
+  position: absolute;
+  top: 5px;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 4px;
+  background: #1b1514;
+  color: #f4ecdd;
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 20px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.gl-pin-lb.r {
+  left: 34px;
+}
+.gl-pin-lb.l {
+  right: 34px;
+}
+.gl-pin.zero .pin-b {
+  fill: #a39684;
+}
+.gl-pin.zero .pin-n {
+  fill: #1b1514;
+}
+.gl-pin.sel .pin-b {
+  fill: #f4b53f;
+  stroke: #1b1514;
+}
+.gl-pin.sel .pin-n {
+  fill: #1b1514;
+}
+.gl-pin.sel .gl-pin-lb {
+  background: #f4b53f;
+  color: #1b1514;
+  box-shadow: 0 0 0 1.5px #1b1514;
+}
+.gl-pin.dim {
+  opacity: 0.32;
+}
+/* Telas estreitas: os nomes se sobrepõem, então só o pino selecionado mostra o rótulo. */
+@media (max-width: 600px) {
+  .gl-pin:not(.sel) .gl-pin-lb {
+    display: none;
+  }
+}

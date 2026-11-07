@@ -1,0 +1,68 @@
+/* Animação de chegada: quando a rolagem suave termina numa seção (src/lib/smooth-scroll.ts),
+   o conteúdo dela sobe e aparece em sequência, e um traço dourado desenha-se sob o título. */
+@keyframes arrive-up {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes arrive-line {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+[data-arrived] > .wrap > * {
+  animation: arrive-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+[data-arrived] > .wrap > :nth-child(2) {
+  animation-delay: 90ms;
+}
+[data-arrived] > .wrap > :nth-child(3) {
+  animation-delay: 170ms;
+}
+[data-arrived] > .wrap > :nth-child(4) {
+  animation-delay: 240ms;
+}
+[data-arrived] > .wrap > :nth-child(5) {
+  animation-delay: 300ms;
+}
+[data-arrived] > .wrap > :nth-child(n + 6) {
+  animation-delay: 350ms;
+}
+
+[data-arrived] .sec-head h2 {
+  position: relative;
+}
+[data-arrived] .sec-head h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  width: 72px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--gold);
+  transform-origin: left center;
+  animation: arrive-line 0.8s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* O foco programático vai para a seção (leitores de tela) sem mostrar contorno. */
+[data-arrived]:focus,
+section[tabindex="-1"]:focus {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-arrived] > .wrap > *,
+  [data-arrived] .sec-head h2::after {
+    animation: none;
+  }
+}

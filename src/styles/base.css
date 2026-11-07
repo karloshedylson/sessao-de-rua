@@ -1,0 +1,67 @@
+body {
+  margin: 0;
+  background: #0e0c0c;
+}
+a {
+  color: #f4b53f;
+}
+a:hover {
+  color: #ffd27a;
+}
+.site {
+  --ink: #0e0c0c;
+  --ink2: #171312;
+  --ink3: #221b1a;
+  --lineD: #3a302d;
+  --paper: #f4ecdd;
+  --paper2: #e9ddc8;
+  --red: #e3262e;
+  --redD: #8e1219;
+  --gold: #f4b53f;
+  --mutedD: #bdb2a6;
+  --inkP: #1b1514;
+  --mutedP: #5e5249;
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--paper);
+  background: var(--ink);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+.site *,
+.site *::before,
+.site *::after {
+  box-sizing: border-box;
+}
+.site button,
+.site input,
+.site select {
+  font: inherit;
+  color: inherit;
+}
+.site button {
+  cursor: pointer;
+}
+.site button:disabled {
+  cursor: not-allowed;
+}
+.site :focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+.wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.ic {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

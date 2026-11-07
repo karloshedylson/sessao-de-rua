@@ -1,0 +1,89 @@
+/* day bar */
+.daybar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(14, 12, 12, 0.95);
+  border-top: 1px solid var(--lineD);
+  border-bottom: 1px solid var(--lineD);
+  backdrop-filter: blur(8px);
+}
+.daybar-in {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  flex-wrap: wrap;
+}
+.daybar-lbl {
+  font-family: var(--font-anton), Impact, sans-serif;
+  font-size: 19px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.days {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex: 1 1 380px;
+  min-width: 0;
+  padding: 2px;
+}
+.day {
+  flex: 0 0 auto;
+  display: grid;
+  justify-items: center;
+  min-width: 64px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--lineD);
+  background: var(--ink2);
+  line-height: 1.1;
+}
+.day:hover {
+  border-color: var(--paper);
+}
+.d-w,
+.d-m {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mutedD);
+}
+.d-n {
+  font-family: var(--font-anton), Impact, sans-serif;
+  font-size: 22px;
+  line-height: 1.1;
+}
+.day.on {
+  background: var(--red);
+  border-color: var(--red);
+}
+.day.on .d-w,
+.day.on .d-m {
+  color: #fff;
+}
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mutedD);
+}
+.check input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--red);
+}
+.status {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 13px;
+  color: var(--gold);
+}

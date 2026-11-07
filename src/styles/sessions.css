@@ -1,0 +1,333 @@
+/* sessions */
+.fbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  align-items: center;
+  padding: 14px;
+  margin-bottom: 14px;
+  border: 1px solid var(--lineD);
+  border-radius: 14px;
+  background: var(--ink2);
+}
+.fld {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.fld > span {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mutedD);
+}
+.seg {
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid var(--lineD);
+  border-radius: 999px;
+  background: var(--ink);
+}
+.seg button {
+  min-height: 42px;
+  padding: 0 14px;
+  border: 0;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--mutedD);
+}
+.seg button + button {
+  border-left: 1px solid var(--lineD);
+}
+.seg button.on {
+  background: var(--paper);
+  color: var(--inkP);
+}
+.selw {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.selw select {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: 42px;
+  padding: 0 38px 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--lineD);
+  background: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+}
+.selw .ic {
+  position: absolute;
+  right: 12px;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  color: var(--mutedD);
+}
+.search {
+  /* ocupa a primeira linha inteira; os filtros ficam abaixo */
+  flex: 1 1 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--lineD);
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--mutedD);
+}
+.search:focus-within {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--paper);
+  font-size: 14px;
+}
+.search input::placeholder {
+  color: #9c9187;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 4px 0 12px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--inkP);
+  font-size: 13px;
+  font-weight: 800;
+}
+.chip button {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--inkP);
+  color: var(--gold);
+  display: grid;
+  place-items: center;
+}
+.chip button .ic {
+  width: 14px;
+  height: 14px;
+}
+.linkbtn {
+  min-height: 38px;
+  border: 0;
+  background: transparent;
+  color: var(--gold);
+  font-weight: 800;
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.summary {
+  margin: 0 0 16px;
+  font-weight: 700;
+  color: var(--paper);
+}
+.summary span {
+  color: var(--mutedD);
+  font-weight: 500;
+}
+.sgrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+.scard {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--lineD);
+  border-radius: 14px;
+  background: var(--ink2);
+}
+.scard-h {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  border-bottom: 2px dashed var(--lineD);
+}
+.scard-h::before,
+.scard-h::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--ink);
+  border: 1px solid var(--lineD);
+}
+.scard-h::before {
+  left: -10px;
+}
+.scard-h::after {
+  right: -10px;
+}
+.scard-h h3 {
+  margin: 6px 0 2px;
+  font-family: var(--font-anton), Impact, sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: 24px;
+  line-height: 1.05;
+}
+.scard-h .addr {
+  font-size: 13px;
+}
+.fhead {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  min-width: 0;
+}
+.fhead .poster.sm {
+  width: 54px;
+  flex: 0 0 54px;
+}
+.mini {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--lineD);
+  background: transparent;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.mini:hover {
+  border-color: var(--paper);
+}
+.srow {
+  display: grid;
+  gap: 10px;
+  padding: 14px 18px;
+}
+.srow + .srow {
+  border-top: 1px solid var(--lineD);
+}
+.srow-f {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.srow h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+.srow p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--mutedD);
+}
+.times {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.stub {
+  min-height: 42px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--paper);
+  color: var(--inkP);
+  font-family: var(--font-anton), Impact, sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  -webkit-mask:
+    radial-gradient(circle 5px at 0 50%, #0000 97%, #000) left/51% 100% no-repeat,
+    radial-gradient(circle 5px at 100% 50%, #0000 97%, #000) right/51% 100% no-repeat;
+  mask:
+    radial-gradient(circle 5px at 0 50%, #0000 97%, #000) left/51% 100% no-repeat,
+    radial-gradient(circle 5px at 100% 50%, #0000 97%, #000) right/51% 100% no-repeat;
+}
+.stub:hover {
+  background: var(--gold);
+}
+.stub.past {
+  opacity: 0.38;
+}
+.stub.past:hover {
+  background: var(--paper);
+}
+.scard-f {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  padding: 12px 18px;
+  border-top: 1px solid var(--lineD);
+  font-size: 13px;
+  color: var(--mutedD);
+}
+.empty {
+  padding: 44px 20px;
+  border: 2px dashed var(--lineD);
+  border-radius: 14px;
+  text-align: center;
+}
+.empty h3 {
+  margin: 0 0 6px;
+  font-family: var(--font-anton), Impact, sans-serif;
+  font-weight: 400;
+  font-size: 28px;
+  text-transform: uppercase;
+}
+.empty p {
+  margin: 0 0 18px;
+  color: var(--mutedD);
+}
+.empty .cta {
+  justify-content: center;
+}
+
+a.stub {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+a.stub:hover,
+a.stub:focus-visible {
+  color: var(--inkP);
+}
+span.stub {
+  display: inline-flex;
+  align-items: center;
+  cursor: not-allowed;
+}

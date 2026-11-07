@@ -1,0 +1,369 @@
+/* map svg */
+.map-svg text {
+  font-family: var(--font-archivo), system-ui, sans-serif;
+}
+.m-base {
+  fill: #ede3cf;
+}
+.m-blk {
+  fill: #e4d7bd;
+}
+.pk.park {
+  fill: #c4cf9e;
+}
+.pk.cem {
+  fill: #d4d0b2;
+}
+.pk.plaza {
+  fill: #e9dec6;
+  stroke: #cdbb9c;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.stc,
+.stf {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.stc {
+  stroke: #cdbb9c;
+}
+.stf {
+  stroke: #fffdf8;
+}
+.stc.elev {
+  stroke: #7f8b55;
+}
+.stf.elev {
+  stroke: #b9c58a;
+  stroke-dasharray: 7 4;
+}
+.z1 .stc.major {
+  stroke-width: 10;
+}
+.z1 .stf.major {
+  stroke-width: 7;
+}
+.z1 .stc.mid {
+  stroke-width: 7.5;
+}
+.z1 .stf.mid {
+  stroke-width: 5;
+}
+.z1 .stc.minor {
+  stroke-width: 5;
+}
+.z1 .stf.minor {
+  stroke-width: 3;
+}
+.z1 .stc.elev {
+  stroke-width: 7;
+}
+.z1 .stf.elev {
+  stroke-width: 4;
+}
+.z2 .stc.major {
+  stroke-width: 15;
+}
+.z2 .stf.major {
+  stroke-width: 11;
+}
+.z2 .stc.mid {
+  stroke-width: 11;
+}
+.z2 .stf.mid {
+  stroke-width: 8;
+}
+.z2 .stc.minor {
+  stroke-width: 8;
+}
+.z2 .stf.minor {
+  stroke-width: 5.5;
+}
+.z2 .stc.elev {
+  stroke-width: 10;
+}
+.z2 .stf.elev {
+  stroke-width: 6.5;
+}
+.z3 .stc.major {
+  stroke-width: 21;
+}
+.z3 .stf.major {
+  stroke-width: 16;
+}
+.z3 .stc.mid {
+  stroke-width: 16;
+}
+.z3 .stf.mid {
+  stroke-width: 12;
+}
+.z3 .stc.minor {
+  stroke-width: 11;
+}
+.z3 .stf.minor {
+  stroke-width: 8;
+}
+.z3 .stc.elev {
+  stroke-width: 14;
+}
+.z3 .stf.elev {
+  stroke-width: 9;
+}
+.stl {
+  font-size: 10.5px;
+  font-weight: 600;
+  fill: #5e5249;
+  text-anchor: middle;
+  letter-spacing: 0.02em;
+  paint-order: stroke;
+  stroke: #fffdf8;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.stl.elev {
+  fill: #4b5a2a;
+  font-style: italic;
+}
+.hood {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  fill: #6f604b;
+  text-anchor: middle;
+}
+.pkl {
+  font-size: 10.5px;
+  font-style: italic;
+  font-weight: 600;
+  fill: #46542a;
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: #ede3cf;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.edge {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  fill: #6f604b;
+}
+.edge.end {
+  text-anchor: end;
+}
+.edge.mid {
+  text-anchor: middle;
+}
+.lmd {
+  fill: #1b1514;
+}
+.lml {
+  font-size: 10.5px;
+  font-weight: 700;
+  fill: #1b1514;
+  paint-order: stroke;
+  stroke: #fffdf8;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.lml.l {
+  text-anchor: end;
+}
+.mcase,
+.mline {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.mcase {
+  stroke: #1b1514;
+  stroke-width: 8;
+}
+.mline {
+  stroke-width: 5;
+}
+.sta {
+  fill: #ffffff;
+  stroke: #1b1514;
+  stroke-width: 2;
+}
+.sta.x {
+  stroke-width: 2.6;
+}
+.stal {
+  font-size: 10.5px;
+  font-weight: 700;
+  fill: #1b1514;
+  paint-order: stroke;
+  stroke: #ffffff;
+  stroke-width: 3.2px;
+  stroke-linejoin: round;
+}
+.stal.l {
+  text-anchor: end;
+}
+.wk {
+  fill: none;
+  stroke: #8e1219;
+  stroke-width: 2;
+  stroke-dasharray: 2 5;
+  stroke-linecap: round;
+  opacity: 0.6;
+  vector-effect: non-scaling-stroke;
+}
+.wk.on {
+  stroke: #e3262e;
+  stroke-width: 3.2;
+  stroke-dasharray: 5 5;
+  opacity: 1;
+}
+.wkp {
+  fill: #e3262e;
+  stroke: #fffdf8;
+  stroke-width: 1.5;
+}
+.wkt {
+  font-size: 11px;
+  font-weight: 800;
+  fill: #ffffff;
+  text-anchor: middle;
+}
+.rtc,
+.rtf {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.rtc {
+  stroke: #1b1514;
+  stroke-width: 12;
+}
+.rtf {
+  stroke: #f4b53f;
+  stroke-width: 7;
+}
+.you-h {
+  fill: #0f7dc2;
+  opacity: 0.2;
+}
+.you {
+  fill: #0f7dc2;
+  stroke: #ffffff;
+  stroke-width: 3;
+}
+.you-t {
+  font-size: 12px;
+  font-weight: 800;
+  fill: #0b4f7c;
+  paint-order: stroke;
+  stroke: #ffffff;
+  stroke-width: 3px;
+}
+.pin {
+  cursor: pointer;
+}
+.pin-sh {
+  fill: rgba(27, 21, 20, 0.28);
+}
+.pin-b {
+  fill: #e3262e;
+  stroke: #fffdf8;
+  stroke-width: 2;
+}
+.pin:hover .pin-b {
+  fill: #b81d24;
+}
+.pin-n {
+  font-size: 12.5px;
+  font-weight: 800;
+  fill: #ffffff;
+  text-anchor: middle;
+}
+.pin-lb {
+  fill: #1b1514;
+}
+.pin-lt {
+  font-size: 12px;
+  font-weight: 700;
+  fill: #f4ecdd;
+}
+.pin.zero .pin-b {
+  fill: #a39684;
+}
+.pin.zero .pin-n {
+  fill: #1b1514;
+}
+.pin.sel .pin-b {
+  fill: #f4b53f;
+  stroke: #1b1514;
+}
+.pin.sel .pin-n {
+  fill: #1b1514;
+}
+.pin.sel .pin-lb {
+  fill: #f4b53f;
+  stroke: #1b1514;
+  stroke-width: 1.5;
+}
+.pin.sel .pin-lt {
+  fill: #1b1514;
+}
+.pin.dim {
+  opacity: 0.32;
+}
+.pin-pulse {
+  fill: none;
+  stroke: #f4b53f;
+  stroke-width: 3;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulse 1.6s ease-out infinite;
+}
+@keyframes pulse {
+  0% {
+    transform: scale(0.75);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+.sb-a {
+  fill: #1b1514;
+}
+.sb-b {
+  fill: #fffdf8;
+  stroke: #1b1514;
+  stroke-width: 1;
+}
+.sb-t {
+  font-size: 10.5px;
+  font-weight: 800;
+  fill: #1b1514;
+  paint-order: stroke;
+  stroke: #ede3cf;
+  stroke-width: 3px;
+}
+.cp-c {
+  fill: #fffdf8;
+  stroke: #1b1514;
+  stroke-width: 1.5;
+}
+.cp-n {
+  fill: #e3262e;
+}
+.cp-s {
+  fill: #1b1514;
+}
+.cp-t {
+  font-size: 10px;
+  font-weight: 800;
+  fill: #1b1514;
+  text-anchor: middle;
+}

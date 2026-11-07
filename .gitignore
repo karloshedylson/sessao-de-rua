@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# documentação e instruções para o Claude: ficam só na máquina, não vão para o GitHub
+*.md
+
 # vercel
 .vercel
 

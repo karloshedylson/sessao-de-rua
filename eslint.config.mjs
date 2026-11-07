@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Protótipo original (referência visual, não faz parte da aplicação).
+    "prototype/**",
+    // Arquivos de terceiros copiados para servir estaticamente (worker do MapLibre, fontes, tiles).
+    "public/map/**",
+    "public/tiles/**",
   ]),
 ]);
 

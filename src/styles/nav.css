@@ -1,0 +1,70 @@
+/* nav */
+.nav {
+  background: var(--ink);
+  border-bottom: 1px solid var(--lineD);
+}
+.nav-in {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-height: 70px;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--paper);
+}
+.logo:hover {
+  color: var(--paper);
+}
+.logo-mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--red);
+  display: grid;
+  place-items: center;
+  color: #fff;
+}
+.logo-mark .ic {
+  width: 24px;
+  height: 24px;
+}
+.logo-txt b {
+  display: block;
+  font-family: var(--font-anton), Impact, sans-serif;
+  font-weight: 400;
+  font-size: 23px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.logo-txt small {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mutedD);
+}
+.nav-links {
+  display: flex;
+  gap: 2px;
+  margin-left: auto;
+}
+.nav-links a {
+  padding: 10px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--paper);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.nav-links a:hover {
+  background: var(--ink3);
+  color: var(--paper);
+}
