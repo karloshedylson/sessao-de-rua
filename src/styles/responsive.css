@@ -31,7 +31,7 @@
     padding: 12px;
   }
   .sgrid {
-    grid-template-columns: 1fr;
+    column-count: 1;
   }
 }
 @media (max-width: 760px) {

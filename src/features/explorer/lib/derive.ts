@@ -66,7 +66,7 @@ export function deriveView(data: ScheduleData, state: ExplorerState, nowMin: num
         for (const s of dayData[cinema.id] ?? []) {
           const film = filmById[s.filmId];
           if (!film || !filmOk(film)) continue;
-          const times = s.times.filter((t) => timeOk(t) && !(state.hidePast && isPast(t)));
+          const times = s.times.filter((t) => timeOk(t) && !isPast(t));
           if (times.length) items.push({ film, times, room: s.room });
         }
       }
@@ -92,22 +92,25 @@ export function deriveView(data: ScheduleData, state: ExplorerState, nowMin: num
   }
   const byFilm = [...groups.values()].sort((a, b) => a.film.title.localeCompare(b.film.title, "pt-BR"));
 
-  // Contagem por filme no dia (sem filtros além de "ocultar passadas"), para o cartaz.
+  // Contagem por filme no dia (sessões que já começaram não contam), para o cartaz.
   const counts: Record<string, { sessions: number; cinemas: Set<string> }> = {};
   for (const c of data.cinemas) {
     for (const s of dayData[c.id] ?? ([] as Screening[])) {
-      const n = s.times.filter((t) => !(state.hidePast && isPast(t))).length;
+      const n = s.times.filter((t) => !isPast(t)).length;
       if (!n) continue;
       const e = (counts[s.filmId] ||= { sessions: 0, cinemas: new Set() });
       e.sessions += n;
       e.cinemas.add(c.id);
     }
   }
-  const filmStats: FilmStat[] = data.films.map((film) => ({
-    film,
-    sessions: counts[film.id]?.sessions ?? 0,
-    cinemas: counts[film.id]?.cinemas.size ?? 0,
-  }));
+  // Só filmes com sessão no dia: quem não tem fica fora da lista de cartazes.
+  const filmStats: FilmStat[] = data.films
+    .map((film) => ({
+      film,
+      sessions: counts[film.id]?.sessions ?? 0,
+      cinemas: counts[film.id]?.cinemas.size ?? 0,
+    }))
+    .filter((s) => s.sessions > 0);
   const featured = filmStats.reduce<FilmStat | null>(
     (best, s) => (!best || s.sessions > best.sessions ? s : best),
     null,

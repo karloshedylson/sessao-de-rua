@@ -66,21 +66,6 @@
 .day.on .d-m {
   color: #fff;
 }
-.check {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--mutedD);
-}
-.check input {
-  width: 18px;
-  height: 18px;
-  margin: 0;
-  accent-color: var(--red);
-}
 .status {
   flex-basis: 100%;
   margin: 0;

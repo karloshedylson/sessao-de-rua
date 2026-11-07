@@ -91,32 +91,33 @@
   text-decoration: none;
   white-space: nowrap;
 }
-.btn-red {
+/* `.btn.btn-x` (e não só `.btn-x`): `.site button { color: inherit }` pesa mais e apagaria a cor nos <button>. */
+.btn.btn-red {
   background: var(--red);
   color: #fff;
 }
-.btn-red:hover {
+.btn.btn-red:hover {
   background: #c51c24;
   color: #fff;
 }
-.btn-ghost {
+.btn.btn-ghost {
   background: transparent;
   border-color: var(--paper);
   color: var(--paper);
 }
-.btn-ghost:hover {
+.btn.btn-ghost:hover {
   background: var(--paper);
   color: var(--inkP);
 }
-.btn-ink {
+.btn.btn-ink {
   background: var(--inkP);
   color: var(--paper);
 }
-.btn-ink:hover {
+.btn.btn-ink:hover {
   background: #000;
   color: var(--paper);
 }
-.btn-line {
+.btn.btn-line {
   background: transparent;
   border-color: var(--inkP);
   color: var(--inkP);

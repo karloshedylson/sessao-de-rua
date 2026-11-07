@@ -9,7 +9,6 @@ export type ExplorerState = {
   lang: LangFilter;
   bairro: string;
   query: string;
-  hidePast: boolean;
   groupBy: GroupBy;
   /** Cinema selecionado no mapa. */
   selectedCinema: string | null;
@@ -25,7 +24,6 @@ export const INITIAL_STATE: ExplorerState = {
   lang: "all",
   bairro: "all",
   query: "",
-  hidePast: true,
   groupBy: "cinema",
   selectedCinema: null,
   selectedFilm: null,

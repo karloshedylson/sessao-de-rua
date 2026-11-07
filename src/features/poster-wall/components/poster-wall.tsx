@@ -19,32 +19,41 @@ export function PosterWall() {
             <h2 id="cartaz-titulo">Filmes de {long}</h2>
           </div>
         </div>
-        <div className="posters">
-          {view.filmStats.map(({ film, sessions, cinemas }) => (
-            <article key={film.id} className={`fcard${sessions ? "" : " dim"}`}>
-              <button
-                type="button"
-                className="fbtn"
-                aria-label={`Ver sessões de ${film.title}`}
-                onClick={() => {
-                  patch({ selectedFilm: film.id, selectedCinema: null, route: null });
-                  scrollToSection("sessoes");
-                }}
-              >
-                <Poster film={film} />
+        {view.filmStats.length === 0 ? (
+          <div className="poster-empty">
+            <p>Não há mais sessões neste dia.</p>
+            {state.day < data.schedule.days.length - 1 && (
+              <button type="button" className="btn btn-red btn-sm" onClick={() => patch({ day: state.day + 1 })}>
+                Ver o próximo dia
               </button>
-              <h3>{film.title}</h3>
-              <p className="fmeta">
-                {joinMeta([film.genre, film.minutes ? `${film.minutes} min` : null, languageLabel(film)])}
-              </p>
-              <p className="fcount">
-                {sessions
-                  ? `${pluralize(sessions, "sessão", "sessões")} em ${pluralize(cinemas, "cinema", "cinemas")}`
-                  : "Sem sessões neste dia"}
-              </p>
-            </article>
-          ))}
-        </div>
+            )}
+          </div>
+        ) : (
+          <div className="posters">
+            {view.filmStats.map(({ film, sessions, cinemas }) => (
+              <article key={film.id} className="fcard">
+                <button
+                  type="button"
+                  className="fbtn"
+                  aria-label={`Ver sessões de ${film.title}`}
+                  onClick={() => {
+                    patch({ selectedFilm: film.id, selectedCinema: null, route: null });
+                    scrollToSection("sessoes");
+                  }}
+                >
+                  <Poster film={film} />
+                </button>
+                <h3>{film.title}</h3>
+                <p className="fmeta">
+                  {joinMeta([film.genre, film.minutes ? `${film.minutes} min` : null, languageLabel(film)])}
+                </p>
+                <p className="fcount">
+                  {pluralize(sessions, "sessão", "sessões")} em {pluralize(cinemas, "cinema", "cinemas")}
+                </p>
+              </article>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

@@ -38,12 +38,6 @@ export function DayBar() {
             );
           })}
         </div>
-        {state.day === 0 && (
-          <label className="check">
-            <input type="checkbox" checked={state.hidePast} onChange={(e) => patch({ hidePast: e.target.checked })} />
-            Ocultar sessões que já começaram
-          </label>
-        )}
       </div>
     </div>
   );
