@@ -2,6 +2,7 @@
  * Executa os scrapers.
  *   npm run scrape                 → todos os adaptadores, grava no banco
  *   npm run scrape -- belas        → só o adaptador "belas"
+ *   npm run scrape -- --skip=belas → todos, menos os listados (separados por vírgula)
  *   npm run scrape -- --dry        → mostra o que foi encontrado, sem gravar
  */
 import { loadEnvConfig } from "@next/env";
@@ -33,7 +34,10 @@ async function main() {
   const args = process.argv.slice(2);
   const dry = args.includes("--dry");
   const ids = args.filter((a) => !a.startsWith("--"));
-  const adapters = ids.length ? ADAPTERS.filter((a) => ids.includes(a.id)) : ADAPTERS;
+  const skip = (args.find((a) => a.startsWith("--skip=")) ?? "").slice("--skip=".length).split(",").filter(Boolean);
+  const adapters = (ids.length ? ADAPTERS.filter((a) => ids.includes(a.id)) : ADAPTERS).filter(
+    (a) => !skip.includes(a.id),
+  );
   if (!adapters.length) throw new Error(`Adaptador desconhecido. Disponíveis: ${ADAPTERS.map((a) => a.id).join(", ")}`);
 
   // O banco só é carregado fora do modo --dry (e depois do .env.local).

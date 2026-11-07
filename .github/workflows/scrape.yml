@@ -50,5 +50,12 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           ADAPTADORES: ${{ inputs.adaptadores }}
+        # O Belas Artes (Cloudflare) responde 403 para os IPs do GitHub: fica fora da coleta agendada e é
+        # atualizado a partir de uma máquina comum (`npm run scrape -- belas`, uma vez por semana).
         # $ADAPTADORES sem aspas de propósito: vários nomes viram vários argumentos.
-        run: npm run scrape -- $ADAPTADORES
+        run: |
+          if [ -n "$ADAPTADORES" ]; then
+            npm run scrape -- $ADAPTADORES
+          else
+            npm run scrape -- --skip=belas
+          fi
