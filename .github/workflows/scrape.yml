@@ -1,0 +1,54 @@
+name: Atualizar sessões
+
+# Roda o scraper dos cinemas e grava no banco (Supabase). O site se atualiza sozinho a cada minuto,
+# então não é preciso novo deploy depois da coleta.
+on:
+  schedule:
+    # Horários em UTC (Brasília = UTC-3): 06:17, 10:17, 14:17 e 20:17.
+    # Minuto 17 de propósito: o GitHub atrasa ou descarta execuções marcadas na hora cheia.
+    - cron: "17 9,13,17,23 * * *"
+  workflow_dispatch:
+    inputs:
+      adaptadores:
+        description: "Só estes cinemas, separados por espaço (belas spcine petrobras lt3 cinesala reserva marquise). Vazio = todos."
+        required: false
+        default: ""
+
+# Nunca duas coletas ao mesmo tempo: a segunda espera a primeira terminar.
+concurrency:
+  group: scrape
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Conferir o segredo do banco
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "::error::O segredo DATABASE_URL não está cadastrado (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
+
+      - name: Coletar sessões
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ADAPTADORES: ${{ inputs.adaptadores }}
+        # $ADAPTADORES sem aspas de propósito: vários nomes viram vários argumentos.
+        run: npm run scrape -- $ADAPTADORES
