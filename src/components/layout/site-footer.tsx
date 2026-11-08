@@ -47,7 +47,7 @@ export function SiteFooter() {
           <div>
             <h2>Sessão de Rua</h2>
             <p>
-              Um guia para quem prefere a sala da esquina. Cinemas independentes e do Circuito Spcine, reunidos num só
+              Um guia para quem prefere a sala da esquina. Cinemas independentes reunidos num só
               mapa da cidade.
             </p>
             <p>O Sessão de Rua não vende ingressos: ao escolher uma sessão você é levado ao site do cinema.</p>
