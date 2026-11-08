@@ -19,8 +19,8 @@ export default async function HomePage() {
       >
         Pular para o conteúdo
       </a>
-      <SiteHeader />
       <ExplorerProvider data={data}>
+        <SiteHeader />
         <main id="conteudo">
           <Hero />
           <DayBar />
@@ -28,8 +28,8 @@ export default async function HomePage() {
           <PosterWall />
           <SessionsSection />
         </main>
+        <SiteFooter />
       </ExplorerProvider>
-      <SiteFooter />
     </div>
   );
 }

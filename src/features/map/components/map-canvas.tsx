@@ -3,13 +3,12 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 import * as maplibregl from "maplibre-gl";
 import { Protocol } from "pmtiles";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import MapGL, { Layer, Marker, ScaleControl, Source, type LayerProps } from "react-map-gl/maplibre";
 import { useExplorer } from "@/features/explorer/components/explorer-provider";
 import type { MapViewport } from "../hooks/use-map-viewport";
 import { MAX_ZOOM } from "../hooks/use-map-viewport";
 import { buildBasemapStyle } from "../lib/basemap-style";
-import { FULL_BOUNDS, pointsToLngLat, unproject } from "../lib/model";
 
 type Props = { viewport: MapViewport; onPickCinema: (id: string) => void };
 
@@ -22,9 +21,6 @@ function ensurePmtilesProtocol() {
   maplibregl.setWorkerUrl(`${window.location.origin}/map/maplibre-gl-worker.mjs`);
   protocolReady = true;
 }
-
-/** Limite de navegação: a área coberta pelo arquivo de tiles ([oeste, sul, leste, norte]). */
-const MAX_BOUNDS: [number, number, number, number] = [-46.74, -23.61, -46.6, -23.5];
 
 const INK = "#1b1514";
 const GOLD = "#f4b53f";
@@ -48,13 +44,68 @@ const collection = (features: ReturnType<typeof line | typeof point>[]) => ({
   features,
 });
 
+type MaplibreMap = maplibregl.Map;
+type Side = "r" | "l" | "t" | "b" | "tr" | "tl" | "br" | "bl";
+type Box = { x1: number; y1: number; x2: number; y2: number };
+const hit = (a: Box, b: Box) => a.x1 < b.x2 && a.x2 > b.x1 && a.y1 < b.y2 && a.y2 > b.y1;
+
+/** Retângulo do rótulo em px, relativo à ponta do pino (a âncora do Marker é a base do pino, 32×40). */
+function labelBox(side: Side, w: number): Box {
+  const h = 20;
+  if (side === "r") return { x1: 18, x2: 18 + w, y1: -35, y2: -35 + h };
+  if (side === "l") return { x1: -18 - w, x2: -18, y1: -35, y2: -35 + h };
+  if (side === "t") return { x1: -w / 2, x2: w / 2, y1: -64, y2: -44 };
+  if (side === "b") return { x1: -w / 2, x2: w / 2, y1: 6, y2: 26 };
+  // Diagonais: ao lado do pino, mas acima (t) ou abaixo (b) da linha do rótulo comum.
+  const y = side[0] === "t" ? -62 : 4;
+  return side[1] === "r" ? { x1: 18, x2: 18 + w, y1: y, y2: y + h } : { x1: -18 - w, x2: -18, y1: y, y2: y + h };
+}
+const shift = (b: Box, p: { x: number; y: number }): Box => ({ x1: b.x1 + p.x, x2: b.x2 + p.x, y1: b.y1 + p.y, y2: b.y2 + p.y });
+
+/**
+ * Escolhe, para cada pino, o lado do rótulo (direita, esquerda, acima, abaixo) sem sobrepor outro rótulo nem outro
+ * pino, na tela atual. Quem tem mais sessões (e o selecionado) escolhe primeiro. Sem lugar livre, o rótulo fica
+ * oculto (aparece ao passar o mouse ou ao selecionar).
+ */
+function placeLabels(
+  items: { id: string; short: string; preferred: Side; total: number; isSel: boolean; x: number; y: number }[],
+  width: number,
+): Map<string, { side: Side; hidden: boolean }> {
+  const bodies = items.map((i) => shift({ x1: -16, x2: 16, y1: -40, y2: 0 }, i));
+  const taken: Box[] = [];
+  const out = new Map<string, { side: Side; hidden: boolean }>();
+  const order = [...items].sort((a, b) => Number(b.isSel) - Number(a.isSel) || b.total - a.total || a.short.localeCompare(b.short));
+  for (const it of order) {
+    const w = it.short.length * 7.2 + 16;
+    const other = it.preferred === "r" ? "l" : "r";
+    const sides: Side[] = [it.preferred, other, "t", "b", `t${it.preferred}`, `t${other}`, `b${it.preferred}`, `b${other}`] as Side[];
+    const free = sides.find((s) => {
+      const box = shift(labelBox(s, w), it);
+      // Rótulo que sairia da borda do mapa também não serve.
+      if (width > 0 && (box.x1 < 4 || box.x2 > width - 4)) return false;
+      return !taken.some((t) => hit(box, t)) && !bodies.some((b, idx) => items[idx].id !== it.id && hit(box, b));
+    });
+    const side = free ?? it.preferred;
+    taken.push(shift(labelBox(side, w), it));
+    out.set(it.id, { side, hidden: !free && !it.isSel });
+  }
+  return out;
+}
+
 /** Mapa real (tiles Protomaps locais, na paleta ilustrada) com metrô, caminhadas, roteiro e pinos por cima. */
 export function MapCanvas({ viewport, onPickCinema }: Props) {
-  const { map, data, state, view } = useExplorer();
+  const { map, data, state, view, city } = useExplorer();
+  // Posição de cada pino na tela, medida quando o mapa carrega, para de mover/zoomar ou muda de tamanho.
+  const [screen, setScreen] = useState<{ width: number; at: Record<string, { x: number; y: number }> }>({ width: 0, at: {} });
+  const measure = (m: MaplibreMap) =>
+    setScreen({
+      width: m.getContainer().clientWidth,
+      at: Object.fromEntries(data.cinemas.map((c) => [c.id, m.project([c.lng, c.lat])])),
+    });
 
   // Cliente apenas (este componente é carregado com ssr: false), então `window` existe.
   ensurePmtilesProtocol();
-  const style = useMemo(() => buildBasemapStyle(window.location.origin), []);
+  const style = useMemo(() => buildBasemapStyle(window.location.origin, city.tiles), [city.tiles]);
 
   const route = state.route ? (map.routes.find((r) => r.id === state.route) ?? null) : null;
   const selected = state.selectedCinema;
@@ -62,7 +113,7 @@ export function MapCanvas({ viewport, onPickCinema }: Props) {
   const nearIds = useMemo(() => new Set(data.cinemas.map((c) => map.nearest[c.id]?.id)), [data.cinemas, map]);
 
   const metroLines = useMemo(
-    () => collection(map.lines.map((l) => line(pointsToLngLat(l.points), { color: l.color }))),
+    () => collection(map.lines.map((l) => line(l.coords, { color: l.color }))),
     [map.lines],
   );
 
@@ -83,7 +134,7 @@ export function MapCanvas({ viewport, onPickCinema }: Props) {
   );
 
   const routeLine = useMemo(
-    () => (route ? collection([line(pointsToLngLat(route.points))]) : collection([])),
+    () => (route ? collection([line(route.coords)]) : collection([])),
     [route],
   );
 
@@ -91,7 +142,7 @@ export function MapCanvas({ viewport, onPickCinema }: Props) {
     () =>
       collection(
         map.landmarks.map((m) =>
-          point(unproject(m.x, m.y), { name: m.name, left: m.side < 0, minzoom: m.name === "Conjunto Nacional" ? 15 : 0 }),
+          point([m.lng, m.lat], { name: m.name, left: m.side < 0, minzoom: m.name === "Conjunto Nacional" ? 15 : 0 }),
         ),
       ),
     [map.landmarks],
@@ -180,16 +231,25 @@ export function MapCanvas({ viewport, onPickCinema }: Props) {
     }))
     .sort((a, b) => Number(a.isSel) - Number(b.isSel));
 
+  // `layoutTick` entra de propósito: o mapa (ref) não é estado, então é ele que pede o recálculo.
+  const labels = placeLabels(
+    pins.flatMap(({ c, total, isSel }) => {
+      const p = screen.at[c.id];
+      return p ? [{ id: c.id, short: c.short, preferred: (c.labelSide > 0 ? "r" : "l") as Side, total, isSel, x: p.x, y: p.y }] : [];
+    }),
+    screen.width,
+  );
+
   return (
     <div className="map-gl">
       <MapGL
         ref={(instance) => viewport.attachMap(instance)}
         mapLib={maplibregl}
         mapStyle={style}
-        initialViewState={{ bounds: FULL_BOUNDS, fitBoundsOptions: { padding: 24 } }}
+        initialViewState={{ bounds: city.bounds, fitBoundsOptions: { padding: 24 } }}
         maxZoom={MAX_ZOOM}
-        minZoom={10}
-        maxBounds={MAX_BOUNDS}
+        minZoom={8}
+        maxBounds={city.maxBounds}
         dragRotate={false}
         pitchWithRotate={false}
         touchPitch={false}
@@ -203,9 +263,13 @@ export function MapCanvas({ viewport, onPickCinema }: Props) {
         onLoad={(e) => {
           e.target.touchZoomRotate.disableRotation();
           viewport.onReady();
+          measure(e.target);
         }}
-        onMove={() => viewport.onMove()}        style={{ width: "100%", height: "100%" }}
-        aria-label="Mapa do centro expandido de São Paulo com os cinemas de rua, as linhas de metrô e os caminhos a pé entre as salas"
+        onMove={() => viewport.onMove()}
+        onMoveEnd={(e) => measure(e.target)}
+        onResize={(e) => measure(e.target)}
+        style={{ width: "100%", height: "100%" }}
+        aria-label={city.mapAriaLabel}
       >
         <ScaleControl position="bottom-left" unit="metric" maxWidth={100} />
 
@@ -263,7 +327,11 @@ export function MapCanvas({ viewport, onPickCinema }: Props) {
                   {total}
                 </text>
               </svg>
-              <span className={`gl-pin-lb ${c.labelSide > 0 ? "r" : "l"}`}>{c.short}</span>
+              <span
+                className={`gl-pin-lb ${labels.get(c.id)?.side ?? (c.labelSide > 0 ? "r" : "l")}${labels.get(c.id)?.hidden ? " hide" : ""}`}
+              >
+                {c.short}
+              </span>
             </div>
           </Marker>
         ))}

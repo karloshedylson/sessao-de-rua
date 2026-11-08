@@ -46,6 +46,49 @@ export function daysBetween(from: string, to: string): string[] {
   return out;
 }
 
+/**
+ * Lê um CSV (RFC 4180): campos entre aspas, aspas duplicadas, vírgulas e quebras de linha dentro de aspas,
+ * BOM e CRLF. Devolve as linhas já separadas em campos (sem tirar linhas vazias).
+ */
+export function parseCsv(input: string): string[][] {
+  const text = input.replace(/^﻿/, "");
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let field = "";
+  let quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (quoted) {
+      if (c === '"' && text[i + 1] === '"') {
+        field += '"';
+        i++;
+      } else if (c === '"') {
+        quoted = false;
+      } else {
+        field += c;
+      }
+    } else if (c === '"') {
+      quoted = true;
+    } else if (c === ",") {
+      row.push(field);
+      field = "";
+    } else if (c === "\n" || c === "\r") {
+      if (c === "\r" && text[i + 1] === "\n") i++;
+      row.push(field);
+      rows.push(row);
+      row = [];
+      field = "";
+    } else {
+      field += c;
+    }
+  }
+  if (field !== "" || row.length) {
+    row.push(field);
+    rows.push(row);
+  }
+  return rows;
+}
+
 /** Resolve uma URL (possivelmente relativa) contra a página de origem. Só aceita http(s). */
 export function absoluteUrl(src: string | undefined, base: string): string | undefined {
   if (!src?.trim()) return undefined;
@@ -67,10 +110,10 @@ export function parseTime(raw: string): string | null {
   return `${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
 }
 
-/** "1h 41min" / "93min" → minutos. */
+/** "1h 41min" / "2h 15m" / "93min" → minutos. */
 export function parseMinutes(raw: string): number | undefined {
   const h = raw.match(/(\d+)\s*h/i);
-  const m = raw.match(/(\d+)\s*min/i);
+  const m = raw.match(/(\d+)\s*m(?:in)?\b/i);
   if (!h && !m) return undefined;
   return Number(h?.[1] ?? 0) * 60 + Number(m?.[1] ?? 0);
 }

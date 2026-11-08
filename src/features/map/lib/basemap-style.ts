@@ -1,8 +1,6 @@
 import { layers, namedFlavor, type Flavor } from "@protomaps/basemaps";
 import type { StyleSpecification } from "maplibre-gl";
 
-/** Fonte de vetores (PMTiles) servida pelo próprio projeto: sem conta, chave ou serviço externo. */
-export const TILES_PATH = "/tiles/sp-centro.pmtiles";
 /** Glifos (fontes dos rótulos), também locais. */
 const GLYPHS_PATH = "/map/fonts/{fontstack}/{range}.pbf";
 
@@ -117,8 +115,11 @@ const DROP_IDS = new Set([
   "roads_oneway",
 ]);
 
-/** Estilo MapLibre completo: camadas do Protomaps recoloridas, sem dependências externas. */
-export function buildBasemapStyle(origin: string): StyleSpecification {
+/**
+ * Estilo MapLibre completo: camadas do Protomaps recoloridas, sem dependências externas.
+ * `tilesPath` é o arquivo PMTiles da cidade (servido pelo próprio projeto, sem conta ou chave).
+ */
+export function buildBasemapStyle(origin: string, tilesPath: string): StyleSpecification {
   const base = layers(SOURCE, flavor(), { lang: "pt" })
     .filter((l) => !DROP_IDS.has(l.id) && !(l.type === "symbol" && l.layout?.["icon-image"]))
     .map((l) => {
@@ -138,7 +139,7 @@ export function buildBasemapStyle(origin: string): StyleSpecification {
     sources: {
       [SOURCE]: {
         type: "vector",
-        url: `pmtiles://${origin}${TILES_PATH}`,
+        url: `pmtiles://${origin}${tilesPath}`,
         attribution:
           '<a href="https://protomaps.com" target="_blank" rel="noopener noreferrer">Protomaps</a> © <a href="https://openstreetmap.org" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>',
       },

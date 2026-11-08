@@ -24,7 +24,8 @@ export function CinemaList({ onSelect }: { onSelect: (id: string) => void }) {
               <span className="c-main">
                 <b>{cinema.short}</b>
                 <small>
-                  {cinema.bairro} · Metrô {map.nearest[cinema.id].name}
+                  {cinema.bairro}
+                  {map.nearest[cinema.id] ? ` · Metrô ${map.nearest[cinema.id].name}` : ""}
                 </small>
               </span>
             </button>

@@ -2,14 +2,22 @@ import type { Film } from "@/types";
 
 type Props = { film: Film; size?: "md" | "sm" };
 
+/** Categoria principal do filme: "Ficção-científica, Drama, Ação" → "Ficção-científica". */
+export function primaryGenre(film: Film): string | null {
+  const first = film.genre?.split(",")[0]?.trim();
+  return first || null;
+}
+
 /**
- * Cartaz do filme. Usa a imagem real quando o cinema de origem a publica; sem imagem, cai no cartaz
- * ilustrado (motivo geométrico + título). A cor de fundo do cartaz ilustrado também aparece enquanto a
- * imagem carrega ou se ela falhar.
+ * Cartaz do filme: só a capa, a categoria (documentário, comédia…) e a classificação indicativa. O nome do
+ * filme fica fora da capa (aparece embaixo, no cartão). Usa a imagem real quando existe; sem imagem, cai no
+ * cartaz ilustrado (motivo geométrico) com a categoria no lugar do título. A cor de fundo do cartaz
+ * ilustrado também aparece enquanto a imagem carrega ou se ela falhar.
  */
 export function Poster({ film, size = "md" }: Props) {
   const { bg, fg, motif } = film.poster;
   const style = { backgroundColor: bg, color: fg };
+  const genre = primaryGenre(film);
   const image = film.posterUrl ? (
     // Imagem de terceiros (cada cinema hospeda a sua); sem otimização do Next de propósito.
     // eslint-disable-next-line @next/next/no-img-element
@@ -27,17 +35,20 @@ export function Poster({ film, size = "md" }: Props) {
     return (
       <div className={`poster m-${motif} has-img`} style={style}>
         {image}
-        <span className="p-foot">
-          <Rating rating={film.rating} />
-        </span>
+        {(genre || film.rating) && (
+          <span className="p-foot">
+            {genre ? <span className="p-genre">{genre}</span> : <span />}
+            <Rating rating={film.rating} />
+          </span>
+        )}
       </div>
     );
   }
   return (
-    <div className={`poster m-${motif}`} style={style}>
-      <span className="p-top">{[film.country, film.year].filter(Boolean).join(" · ")}</span>
+    <div className={`poster m-${motif}`} style={style} role="img" aria-label={`Cartaz de ${film.title}`}>
+      <span />
       <span className="p-foot">
-        <span className="p-title">{film.title}</span>
+        {genre ? <span className="p-title">{genre}</span> : <span />}
         <Rating rating={film.rating} />
       </span>
     </div>

@@ -38,14 +38,17 @@
   .nav-links {
     display: none;
   }
-  .stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .city-switch {
+    margin-left: auto;
   }
-  .stats li:nth-child(3) {
-    border-left: 0;
-  }
-  .stats li:nth-child(n + 3) {
-    border-top: 2px dashed #cdbfa6;
+  /* Celular: o hero é alto e estreito, então a foto (larga) só mostra um pedaço; alinhá-la à direita enquadra a
+     pessoa caminhando e as sombras longas. As posições seguem a ordem das camadas do `background` do hero. */
+  .hero {
+    background-position:
+      0 0,
+      0 0,
+      90% 100%,
+      0 0;
   }
   .foot-in {
     grid-template-columns: 1fr;

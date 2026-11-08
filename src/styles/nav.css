@@ -64,6 +64,15 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
+.city-switch {
+  margin-left: 12px;
+  flex: 0 0 auto;
+}
+.seg.city-switch button {
+  min-height: 38px;
+  padding: 0 14px;
+  font-size: 13px;
+}
 .nav-links a:hover {
   background: var(--ink3);
   color: var(--paper);

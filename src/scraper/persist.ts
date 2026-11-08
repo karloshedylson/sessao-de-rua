@@ -14,6 +14,7 @@ export async function syncCinemas(): Promise<void> {
     .onConflictDoUpdate({
       target: cinemas.id,
       set: {
+        city: sql`excluded.city`,
         name: sql`excluded.name`,
         short: sql`excluded.short`,
         bairro: sql`excluded.bairro`,
@@ -40,23 +41,34 @@ export async function persistAdapter(adapter: CinemaAdapter, scraped: ScrapedSes
   const found = scraped.filter((s) => s.day >= today);
   if (found.length === 0) throw new Error("O site só trouxe sessões já passadas.");
 
-  // Filmes: um por título normalizado; preenche só campos ainda vazios, para uma fonte não apagar a outra.
-  const byKey = new Map<string, ScrapedSession>();
-  for (const s of found) if (!byKey.has(titleKey(s.title))) byKey.set(titleKey(s.title), s);
+  // Filmes: um por título normalizado. Os metadados de várias sessões do mesmo filme se completam (vale o
+  // primeiro valor não vazio de cada campo), e no banco só campos ainda vazios são preenchidos, para uma
+  // fonte não apagar a outra.
+  const byKey = new Map<string, { title: string; film: ScrapedSession["film"] }>();
+  for (const s of found) {
+    const key = titleKey(s.title);
+    const acc = byKey.get(key) ?? { title: s.title, film: {} };
+    for (const [field, value] of Object.entries(s.film)) {
+      const f = acc.film as Record<string, unknown>;
+      if (value !== undefined && value !== null && f[field] === undefined) f[field] = value;
+    }
+    byKey.set(key, acc);
+  }
 
   const filmRows = await db
     .insert(films)
     .values(
-      [...byKey.entries()].map(([key, s]) => ({
-        title: s.title,
+      [...byKey.entries()].map(([key, { title, film }]) => ({
+        title,
         titleKey: key,
-        country: s.film.country ?? null,
-        year: s.film.year ?? null,
-        minutes: s.film.minutes ?? null,
-        rating: s.film.rating ?? null,
-        language: s.film.language ?? null,
-        genre: s.film.genre ?? null,
-        posterUrl: s.film.posterUrl ?? null,
+        country: film.country ?? null,
+        year: film.year ?? null,
+        minutes: film.minutes ?? null,
+        rating: film.rating ?? null,
+        language: film.language ?? null,
+        genre: film.genre ?? null,
+        posterUrl: film.posterUrl ?? null,
+        tmdbId: film.tmdbId ?? null,
       })),
     )
     .onConflictDoUpdate({
@@ -68,8 +80,14 @@ export async function persistAdapter(adapter: CinemaAdapter, scraped: ScrapedSes
         rating: sql`coalesce(${films.rating}, excluded.rating)`,
         language: sql`coalesce(${films.language}, excluded.language)`,
         genre: sql`coalesce(${films.genre}, excluded.genre)`,
-        // O cartaz mais recente prevalece (o cinema pode trocar a imagem).
+        // Cartaz do cinema: o mais recente prevalece (o cinema pode trocar a imagem). Ele só aparece no site
+        // quando o TMDB não conhece o filme; o cartaz do TMDB fica em `poster_tmdb_url`.
         posterUrl: sql`coalesce(excluded.poster_url, ${films.posterUrl})`,
+        // Um id informado à mão (planilha) vale mais que o encontrado pela busca automática. Se ele mudou, o
+        // cartaz e a data da consulta do TMDB são zerados para o enriquecimento buscar de novo.
+        posterTmdbUrl: sql`case when excluded.tmdb_id is not null and excluded.tmdb_id is distinct from ${films.tmdbId} then null else ${films.posterTmdbUrl} end`,
+        tmdbCheckedAt: sql`case when excluded.tmdb_id is not null and excluded.tmdb_id is distinct from ${films.tmdbId} then null else ${films.tmdbCheckedAt} end`,
+        tmdbId: sql`coalesce(excluded.tmdb_id, ${films.tmdbId})`,
       },
     })
     .returning({ id: films.id, titleKey: films.titleKey });

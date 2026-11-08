@@ -38,6 +38,7 @@ export const dbSessionsRepository: SessionsRepository = {
         language: films.language,
         genre: films.genre,
         posterUrl: films.posterUrl,
+        posterTmdbUrl: films.posterTmdbUrl,
       })
       .from(sessions)
       .innerJoin(films, eq(sessions.filmId, films.id))
@@ -64,7 +65,8 @@ export const dbSessionsRepository: SessionsRepository = {
           language: (r.language === "nac" ? "nac" : "leg") satisfies FilmLanguage,
           genre: r.genre,
           poster: posterFor(r.title),
-          posterUrl: r.posterUrl,
+          // Prioridade: cartaz do TMDB → cartaz do cinema → nenhum (o front cai no cartaz ilustrado).
+          posterUrl: r.posterTmdbUrl ?? r.posterUrl,
         });
       }
 

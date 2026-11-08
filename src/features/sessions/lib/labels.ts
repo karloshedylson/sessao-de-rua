@@ -1,10 +1,14 @@
+import { CITIES } from "@/features/cities/config";
 import type { Cinema, Film, LinkLevel, SessionLink } from "@/types";
 import type { ScheduleData } from "@/services/sessions/repository";
 import type { NearestStation } from "@/features/map/lib/model";
 
 /** Site do cinema, ou uma busca enquanto a URL oficial não está mapeada. */
 export function cinemaHref(cinema: Cinema): string {
-  return cinema.website ?? `https://www.google.com/search?q=${encodeURIComponent(`${cinema.name} São Paulo sessões`)}`;
+  return (
+    cinema.website ??
+    `https://www.google.com/search?q=${encodeURIComponent(`${cinema.name} ${CITIES[cinema.city].name} sessões`)}`
+  );
 }
 
 /** Destino ao clicar numa sessão: o link mais específico disponível (sessão > filme > site do cinema). */
@@ -31,7 +35,7 @@ export function targetLabel(level: LinkLevel): string {
 }
 
 export function mapsHref(cinema: Cinema): string {
-  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${cinema.addr}, São Paulo`)}`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${cinema.addr}, ${CITIES[cinema.city].name}`)}`;
 }
 
 export function metroLabel(near: NearestStation): string {

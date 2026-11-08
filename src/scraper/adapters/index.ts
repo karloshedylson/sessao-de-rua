@@ -4,6 +4,7 @@ import { cinesalaAdapter } from "./cinesala";
 import { lt3Adapter } from "./lt3";
 import { marquiseAdapter } from "./marquise";
 import { petrobrasAdapter } from "./petrobras";
+import { planilhaAdapter } from "./planilha";
 import { reservaAdapter } from "./reserva";
 import { spcineAdapter } from "./spcine";
 
@@ -16,4 +17,5 @@ export const ADAPTERS: CinemaAdapter[] = [
   cinesalaAdapter,
   reservaAdapter,
   marquiseAdapter,
+  planilhaAdapter,
 ];

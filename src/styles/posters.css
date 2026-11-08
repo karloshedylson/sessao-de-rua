@@ -22,16 +22,27 @@
 .fbtn:hover {
   transform: translateY(-4px);
 }
+/* Nomes longos são cortados em 2 linhas (e a ficha em 1) para os cartões ficarem alinhados na grade. */
 .fcard h3 {
   margin: 8px 0 0;
   font-size: 16px;
   font-weight: 800;
   line-height: 1.25;
+  min-height: 2.5em;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
 }
 .fmeta {
   margin: 0;
   font-size: 13px;
   color: var(--mutedP);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .fcount {
   margin: 2px 0 0;
@@ -130,12 +141,36 @@
   font-size: 24px;
   line-height: 0.98;
   letter-spacing: 0.01em;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+/* No cartaz ilustrado a categoria ocupa o lugar do título: menor, para palavras longas caberem inteiras. */
+.poster:not(.sm) .p-title {
+  font-size: 20px;
 }
 .p-foot {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   gap: 8px;
+}
+/* Categoria sobre a imagem do cartaz: etiqueta escura, para ler em qualquer foto. */
+.p-genre {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  padding: 5px 8px;
+  border-radius: 5px;
+  background: rgba(14, 12, 12, 0.82);
+  color: #f4ecdd;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .poster.sm {
   padding: 0;

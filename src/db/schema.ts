@@ -19,6 +19,8 @@ export const linkLevel = pgEnum("link_level", ["session", "film", "cinema"]);
 export const cinemas = pgTable("cinemas", {
   /** Slug estável usado pelo front (ex.: "belas"). */
   id: text("id").primaryKey(),
+  /** Cidade ("sp", "recife"). */
+  city: text("city").notNull().default("sp"),
   name: text("name").notNull(),
   short: text("short").notNull(),
   bairro: text("bairro").notNull(),
@@ -44,8 +46,14 @@ export const films = pgTable(
     rating: text("rating"),
     language: text("language"),
     genre: text("genre"),
-    /** URL da imagem do cartaz, como publicada pelo cinema de origem. */
+    /** URL do cartaz publicado pelo cinema de origem. Só vale quando o TMDB não conhece o filme. */
     posterUrl: text("poster_url"),
+    /** URL do cartaz no TMDB. Tem prioridade sobre `poster_url` (veja `db-repository.ts`). */
+    posterTmdbUrl: text("poster_tmdb_url"),
+    /** Id do filme no TMDB (usado para buscar cartaz e metadados quando faltam). */
+    tmdbId: integer("tmdb_id"),
+    /** Última consulta ao TMDB, com ou sem sucesso (evita repetir buscas sem resultado). */
+    tmdbCheckedAt: timestamp("tmdb_checked_at", { withTimezone: true }),
   },
   (t) => [uniqueIndex("films_title_key_idx").on(t.titleKey)],
 );

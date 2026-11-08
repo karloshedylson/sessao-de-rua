@@ -16,8 +16,8 @@ const MapCanvas = dynamic(() => import("./map-canvas").then((m) => m.MapCanvas),
 });
 
 export function MapSection() {
-  const { map, data, state, patch } = useExplorer();
-  const viewport = useMapViewport();
+  const { map, data, state, patch, city } = useExplorer();
+  const viewport = useMapViewport(city.bounds);
   const film = data.films.find((f) => f.id === state.selectedFilm);
 
   const selectCinema = (id: string, focus: boolean) => {
@@ -35,7 +35,7 @@ export function MapSection() {
     const route = map.routes.find((r) => r.id === id);
     if (!route) return;
     patch({ route: id, selectedCinema: null });
-    viewport.fitPoints(route.points.split(" ").map((p) => p.split(",").map(Number) as [number, number]));
+    viewport.fitPoints(route.coords);
   };
 
   return (
@@ -48,25 +48,27 @@ export function MapSection() {
           </div>
         </div>
 
-        <div className="routes" role="group" aria-label="Roteiros sugeridos">
-          <span className="routes-l">Roteiros</span>
-          {map.routes.map((r) => {
-            const on = state.route === r.id;
-            return (
-              <button
-                key={r.id}
-                type="button"
-                className={`rchip${on ? " on" : ""}`}
-                aria-pressed={on}
-                onClick={() => pickRoute(r.id)}
-              >
-                <span className="ri">{r.mode === "walk" ? <WalkIcon /> : <MetroIcon />}</span>
-                <span className="rn">{r.name}</span>
-                <span className="rm">{r.meta}</span>
-              </button>
-            );
-          })}
-        </div>
+        {map.routes.length > 0 && (
+          <div className="routes" role="group" aria-label="Roteiros sugeridos">
+            <span className="routes-l">Roteiros</span>
+            {map.routes.map((r) => {
+              const on = state.route === r.id;
+              return (
+                <button
+                  key={r.id}
+                  type="button"
+                  className={`rchip${on ? " on" : ""}`}
+                  aria-pressed={on}
+                  onClick={() => pickRoute(r.id)}
+                >
+                  <span className="ri">{r.mode === "walk" ? <WalkIcon /> : <MetroIcon />}</span>
+                  <span className="rn">{r.name}</span>
+                  <span className="rm">{r.meta}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         <div className="mapgrid">
           <div className="maplist">
@@ -81,7 +83,8 @@ export function MapSection() {
 
           <div className="mapwrap">
             <div className="mapcard">
-              <MapCanvas viewport={viewport} onPickCinema={togglePin} />
+              {/* `key`: ao trocar de cidade o mapa é recriado (novos tiles e enquadramento). */}
+              <MapCanvas key={city.id} viewport={viewport} onPickCinema={togglePin} />
               {!film && <MapHint />}
               {film && (
                 <div className="mapfilm">
@@ -99,7 +102,8 @@ export function MapSection() {
             </div>
             <MapLegend />
             <p className="mapnote">
-              Mapa © OpenStreetMap e Protomaps. Estações e cinemas em posições aproximadas.
+              Mapa © OpenStreetMap e Protomaps.{" "}
+              {city.hasMetro ? "Estações e cinemas em posições aproximadas." : "Cinemas em posições aproximadas."}
             </p>
           </div>
         </div>

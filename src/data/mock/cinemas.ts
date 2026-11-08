@@ -1,13 +1,14 @@
 import type { Cinema } from "@/types";
 
 /**
- * Cinemas de rua do mapa. Endereços e coordenadas vêm do protótipo.
- * PENDENTE: `website` só preenchido onde o endereço é conhecido; os demais
- * caem numa busca até o scraping trazer a URL oficial de cada cinema.
+ * Cinemas de rua do mapa, de todas as cidades. Coordenadas do OpenStreetMap (conferidas em 05/11/2026).
+ * `website` é o destino do clique quando a sessão não traz link próprio: site do cinema ou, sem site, o Instagram.
  */
 export const CINEMAS: Cinema[] = [
+  // ───────────────────────────── São Paulo ─────────────────────────────
   {
     id: "belas",
+    city: "sp",
     name: "Cine Belas Artes",
     short: "Belas Artes",
     bairro: "Consolação",
@@ -21,6 +22,7 @@ export const CINEMAS: Cinema[] = [
   },
   {
     id: "augusta",
+    city: "sp",
     name: "Espaço Petrobras de Cinema Augusta",
     short: "Espaço Augusta",
     bairro: "Consolação",
@@ -34,6 +36,7 @@ export const CINEMAS: Cinema[] = [
   },
   {
     id: "reserva",
+    city: "sp",
     name: "Reserva Cultural",
     short: "Reserva Cultural",
     bairro: "Bela Vista",
@@ -47,6 +50,7 @@ export const CINEMAS: Cinema[] = [
   },
   {
     id: "cinesala",
+    city: "sp",
     name: "CineSala",
     short: "CineSala",
     bairro: "Pinheiros",
@@ -60,6 +64,7 @@ export const CINEMAS: Cinema[] = [
   },
   {
     id: "lt3",
+    city: "sp",
     name: "Cine LT3",
     short: "Cine LT3",
     bairro: "Perdizes",
@@ -73,6 +78,7 @@ export const CINEMAS: Cinema[] = [
   },
   {
     id: "olido",
+    city: "sp",
     name: "Cine Olido (Circuito Spcine)",
     short: "Cine Olido",
     bairro: "República",
@@ -86,6 +92,7 @@ export const CINEMAS: Cinema[] = [
   },
   {
     id: "marquise",
+    city: "sp",
     name: "Cine Marquise",
     short: "Marquise",
     bairro: "Cerqueira César",
@@ -99,6 +106,7 @@ export const CINEMAS: Cinema[] = [
   },
   {
     id: "ccsp",
+    city: "sp",
     name: "CCSP · Sala Paulo Emílio (Circuito Spcine)",
     short: "CCSP",
     bairro: "Paraíso",
@@ -110,15 +118,106 @@ export const CINEMAS: Cinema[] = [
     labelSide: 1,
     website: "https://circuitospcine.com.br/",
   },
-];
 
-/** Bairros com cinema, na ordem do filtro. */
-export const BAIRROS = [
-  "Bela Vista",
-  "Cerqueira César",
-  "Consolação",
-  "Paraíso",
-  "Perdizes",
-  "Pinheiros",
-  "República",
-] as const;
+  // ─────────────────────────────── Recife ───────────────────────────────
+  // Sessões vêm da planilha (adaptador "recife"): nenhum desses cinemas publica horários em formato lido por máquina.
+  {
+    id: "saoluiz",
+    city: "recife",
+    name: "Cinema São Luiz",
+    short: "São Luiz",
+    bairro: "Boa Vista",
+    addr: "Rua da Aurora, 175",
+    lat: -8.06209,
+    lng: -34.88208,
+    tag: "Fundarpe",
+    fullPrice: 10,
+    labelSide: 1,
+    website: "https://www.instagram.com/cinemasaoluizpe/",
+  },
+  {
+    id: "teatro-parque",
+    city: "recife",
+    name: "Cineteatro do Parque",
+    short: "Teatro do Parque",
+    bairro: "Boa Vista",
+    addr: "Rua do Hospício, 81",
+    lat: -8.06176,
+    lng: -34.8852,
+    tag: "Prefeitura do Recife",
+    fullPrice: 10,
+    labelSide: 1,
+    website: "https://www.instagram.com/teatrodoparqueoficial/",
+  },
+  {
+    id: "fundacao-derby",
+    city: "recife",
+    name: "Cinema da Fundação · Derby",
+    short: "Fundação Derby",
+    bairro: "Derby",
+    addr: "Rua Henrique Dias, 609",
+    lat: -8.05935,
+    lng: -34.89998,
+    tag: "Fundaj",
+    fullPrice: 14,
+    labelSide: -1,
+    website: "https://cinemadafundacao.com.br/",
+  },
+  {
+    id: "fundacao-museu",
+    city: "recife",
+    name: "Cinema da Fundação · Museu",
+    short: "Fundação Museu",
+    bairro: "Casa Forte",
+    addr: "Avenida Dezessete de Agosto, 2187",
+    lat: -8.03048,
+    lng: -34.92559,
+    tag: "Fundaj",
+    fullPrice: 14,
+    labelSide: 1,
+    website: "https://cinemadafundacao.com.br/",
+  },
+  {
+    id: "fundacao-porto",
+    city: "recife",
+    name: "Cinema da Fundação · Porto Digital",
+    short: "Fundação Porto",
+    bairro: "Recife",
+    addr: "Rua Cais do Apolo, 222 · Porto Digital",
+    lat: -8.06309,
+    lng: -34.87391,
+    tag: "Fundaj",
+    fullPrice: 14,
+    labelSide: 1,
+    website: "https://cinemadafundacao.com.br/",
+  },
+  {
+    id: "apipucos",
+    city: "recife",
+    name: "Cine Apipucos",
+    short: "Apipucos",
+    bairro: "Apipucos",
+    addr: "Parque de Apipucos · Rua de Apipucos",
+    lat: -8.02193,
+    lng: -34.93314,
+    tag: "Ao ar livre",
+    fullPrice: 0,
+    labelSide: 1,
+    website: "https://www.instagram.com/parqueapipucosoficial/",
+  },
+  {
+    id: "ufpe",
+    city: "recife",
+    name: "Cine UFPE",
+    short: "Cine UFPE",
+    bairro: "Cidade Universitária",
+    addr: "Avenida dos Reitores, s/n · campus Recife da UFPE",
+    // Posição APROXIMADA (junto ao Teatro da UFPE): o cinema não consta no OpenStreetMap.
+    lat: -8.05266,
+    lng: -34.95073,
+    tag: "Universitário",
+    fullPrice: 0,
+    labelSide: 1,
+    website: "https://www.instagram.com/cinema.ufpe/",
+  },
+];

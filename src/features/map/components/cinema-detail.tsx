@@ -4,7 +4,7 @@ import { ChevronLeftIcon, PinIcon } from "@/components/shared/icons";
 import { SmoothLink } from "@/components/ui/smooth-link";
 import { useExplorer } from "@/features/explorer/components/explorer-provider";
 import { dayLabels } from "@/features/explorer/lib/derive";
-import { findSessionLink, mapsHref, sessionTarget, targetLabel } from "@/features/sessions/lib/labels";
+import { cinemaHref, findSessionLink, mapsHref, sessionTarget, targetLabel } from "@/features/sessions/lib/labels";
 import { formatKm } from "@/lib/format";
 import { toMinutes } from "@/lib/time";
 
@@ -44,16 +44,18 @@ export function CinemaDetail({ onSelect }: { onSelect: (id: string) => void }) {
       <p className="addr">
         {cinema.addr} · {cinema.bairro}
       </p>
-      <ul className="facts">
-        <li>
-          {near.lines.map((l) => (
-            <span key={l.name} className="ldot" style={{ background: l.color }} title={l.name} />
-          ))}
-          <span>
-            Metrô {near.name} · {near.km < 1.2 ? `${near.min} min a pé` : `${formatKm(near.km)} a pé`}
-          </span>
-        </li>
-      </ul>
+      {near && (
+        <ul className="facts">
+          <li>
+            {near.lines.map((l) => (
+              <span key={l.name} className="ldot" style={{ background: l.color }} title={l.name} />
+            ))}
+            <span>
+              Metrô {near.name} · {near.km < 1.2 ? `${near.min} min a pé` : `${formatKm(near.km)} a pé`}
+            </span>
+          </li>
+        </ul>
+      )}
 
       {neighbors.length > 0 && (
         <>
@@ -90,7 +92,12 @@ export function CinemaDetail({ onSelect }: { onSelect: (id: string) => void }) {
           })}
         </div>
       ) : (
-        <p className="muted">Nenhuma sessão com os filtros atuais neste dia.</p>
+        <p className="muted">
+          Nenhuma sessão com os filtros atuais neste dia.{" "}
+          <a href={cinemaHref(cinema)} target="_blank" rel="noopener noreferrer">
+            Ver a programação no site do cinema
+          </a>
+        </p>
       )}
 
       <div className="detail-actions">

@@ -2,7 +2,11 @@ export type Period = "all" | "tarde" | "noite";
 export type LangFilter = "all" | "nac" | "leg";
 export type GroupBy = "cinema" | "filme";
 
+import type { CityId } from "@/types";
+
 export type ExplorerState = {
+  /** Cidade ativa. */
+  city: CityId;
   /** Índice do dia escolhido (0 = hoje). */
   day: number;
   period: Period;
@@ -19,6 +23,7 @@ export type ExplorerState = {
 };
 
 export const INITIAL_STATE: ExplorerState = {
+  city: "sp",
   day: 0,
   period: "all",
   lang: "all",

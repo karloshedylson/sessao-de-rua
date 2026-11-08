@@ -46,7 +46,7 @@
   display: flex;
 }
 .foot-logos a,
-.foot-logos li > img {
+.foot-logos .foot-static {
   flex: 1;
   display: grid;
   place-items: center;
@@ -59,6 +59,12 @@
     border-color 0.25s ease,
     background-color 0.25s ease,
     transform 0.25s ease;
+}
+.foot-logos .foot-name {
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--paper);
 }
 .foot-logos a:hover,
 .foot-logos a:focus-visible {
@@ -88,6 +94,21 @@
   filter: invert(1) hue-rotate(180deg);
   /* o fundo branco vira preto após inverter; "lighten" o deixa transparente sobre o cartão */
   mix-blend-mode: lighten;
+}
+/* crédito obrigatório do TMDB: discreto, sempre menor que a marca do site */
+.foot .foot-tmdb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  max-width: none;
+  margin: 24px 0 0;
+  font-size: 12.5px;
+}
+.foot-tmdb img {
+  height: 11px;
+  width: auto;
+  flex: 0 0 auto;
 }
 .foot .foot-copy {
   max-width: none;

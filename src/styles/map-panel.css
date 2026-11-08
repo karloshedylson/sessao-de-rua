@@ -144,22 +144,6 @@
   border-radius: 14px;
   background: #ede3cf;
 }
-.map-svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 4/3;
-  touch-action: pan-y;
-  user-select: none;
-  -webkit-user-select: none;
-  cursor: grab;
-}
-.map-svg:active {
-  cursor: grabbing;
-}
-.map-svg.zoomed {
-  touch-action: none;
-}
 .mapfilm {
   position: absolute;
   left: 12px;

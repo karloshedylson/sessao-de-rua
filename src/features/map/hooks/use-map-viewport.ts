@@ -2,7 +2,8 @@
 
 import { useCallback, useRef, useState } from "react";
 import type { MapRef } from "react-map-gl/maplibre";
-import { FULL_BOUNDS, unproject } from "../lib/model";
+import type { Bounds } from "@/features/cities/config";
+import type { LngLat } from "../lib/model";
 
 export const MAX_ZOOM = 17;
 const FIT_PADDING = 24;
@@ -11,10 +12,10 @@ const reducedMotion = () => typeof window !== "undefined" && window.matchMedia("
 const anim = () => ({ duration: reducedMotion() ? 0 : 400 });
 
 /**
- * Controle de zoom e enquadramento do mapa real (MapLibre). Mantém a mesma API do antigo mapa SVG:
- * `focusOn` e `fitPoints` recebem coordenadas do espaço SVG do modelo e são convertidas para lng/lat.
+ * Controle de zoom e enquadramento do mapa real (MapLibre). `bounds` é o enquadramento inicial da cidade
+ * ativa; `focusOn` e `fitPoints` recebem posições `[lng, lat]`.
  */
-export function useMapViewport() {
+export function useMapViewport(bounds: Bounds) {
   const mapRef = useRef<MapRef | null>(null);
   const fullZoom = useRef<number | null>(null);
   const [flags, setFlags] = useState({ isFull: true, atMaxZoom: false });
@@ -33,27 +34,26 @@ export function useMapViewport() {
     const m = mapRef.current;
     if (!m) return;
     fullZoom.current = m.getZoom();
-    m.getMap().setMinZoom(Math.max(10, fullZoom.current - 0.3));
+    m.getMap().setMinZoom(Math.max(8, fullZoom.current - 0.3));
     sync();
   }, [sync]);
 
   const reset = useCallback(() => {
-    mapRef.current?.fitBounds(FULL_BOUNDS, { padding: FIT_PADDING, ...anim() });
-  }, []);
+    mapRef.current?.fitBounds(bounds, { padding: FIT_PADDING, ...anim() });
+  }, [bounds]);
 
-  const focusOn = useCallback(([x, y]: [number, number]) => {
+  const focusOn = useCallback(([lng, lat]: LngLat) => {
     const m = mapRef.current;
     if (!m) return;
     const min = (fullZoom.current ?? 12) + 1.6;
-    m.easeTo({ center: unproject(x, y), zoom: Math.max(m.getZoom(), min), ...anim() });
+    m.easeTo({ center: [lng, lat], zoom: Math.max(m.getZoom(), min), ...anim() });
   }, []);
 
-  const fitPoints = useCallback((pts: [number, number][]) => {
+  const fitPoints = useCallback((pts: LngLat[]) => {
     const m = mapRef.current;
     if (!m || !pts.length) return;
-    const lngLat = pts.map(([x, y]) => unproject(x, y));
-    const lngs = lngLat.map((p) => p[0]);
-    const lats = lngLat.map((p) => p[1]);
+    const lngs = pts.map((p) => p[0]);
+    const lats = pts.map((p) => p[1]);
     m.fitBounds(
       [
         [Math.min(...lngs), Math.min(...lats)],

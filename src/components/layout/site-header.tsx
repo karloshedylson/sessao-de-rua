@@ -1,5 +1,6 @@
 import { ReelIcon } from "@/components/shared/icons";
 import { SmoothLink } from "@/components/ui/smooth-link";
+import { CitySwitch } from "./city-switch";
 
 const LINKS: { href: `#${string}`; label: string }[] = [
   { href: "#mapa", label: "Mapa" },
@@ -26,6 +27,7 @@ export function SiteHeader() {
             </SmoothLink>
           ))}
         </nav>
+        <CitySwitch />
       </div>
     </header>
   );

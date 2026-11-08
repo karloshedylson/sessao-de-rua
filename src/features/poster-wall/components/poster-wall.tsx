@@ -30,7 +30,9 @@ export function PosterWall() {
           </div>
         ) : (
           <div className="posters">
-            {view.filmStats.map(({ film, sessions, cinemas }) => (
+            {view.filmStats.map(({ film, sessions, cinemas }) => {
+              const meta = joinMeta([film.genre, film.minutes ? `${film.minutes} min` : null, languageLabel(film)]);
+              return (
               <article key={film.id} className="fcard">
                 <button
                   type="button"
@@ -43,15 +45,17 @@ export function PosterWall() {
                 >
                   <Poster film={film} />
                 </button>
-                <h3>{film.title}</h3>
-                <p className="fmeta">
-                  {joinMeta([film.genre, film.minutes ? `${film.minutes} min` : null, languageLabel(film)])}
+                {/* Nome e ficha são cortados no CSS; o `title` mostra o texto inteiro ao passar o mouse. */}
+                <h3 title={film.title}>{film.title}</h3>
+                <p className="fmeta" title={meta}>
+                  {meta}
                 </p>
                 <p className="fcount">
                   {pluralize(sessions, "sessão", "sessões")} em {pluralize(cinemas, "cinema", "cinemas")}
                 </p>
               </article>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

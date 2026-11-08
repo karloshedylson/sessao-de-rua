@@ -1,0 +1,7 @@
+cinema,data,hora,filme,sala,link,ano,duracao,classificacao,genero,pais,idioma,cartaz,tmdb
+saoluiz,13/11/2026,16:00,Exemplo de Filme Nacional,Sala única,,2024,98,12,Drama,Brasil,nacional,,
+saoluiz,13/11/2026,19:00,Exemplo de Filme Nacional,Sala única,,2024,98,12,Drama,Brasil,nacional,,
+saoluiz,14/11/2026,19:00,Exemplo de Filme Nacional,Sala única,,2024,98,12,Drama,Brasil,nacional,,
+fundacao-derby,13/11/2026,18:30,Exemplo de Filme Estrangeiro,Sala 1,https://cinemadafundacao.com.br/filmes/exemplo/,2023,112,14,Comédia,França,legendado,,
+fundacao-porto,15/11/2026,17:00,Exemplo de Filme Estrangeiro,,,2023,112,14,Comédia,França,legendado,,
+apipucos,13/11/2026,18:00,Exemplo de Clássico,Telão,,1985,116,L,Aventura,EUA,legendado,,

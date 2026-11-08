@@ -11,9 +11,9 @@ const archivo = Archivo({
   display: "swap",
 });
 
-const TITLE = "Sessão de Rua — cinemas de rua de São Paulo";
+const TITLE = "Sessão de Rua - buscando filmes em cinemas de rua do Brasil";
 const DESCRIPTION =
-  "Programação dos cinemas de rua de São Paulo num só lugar: mapa com metrô e caminhadas, filmes em cartaz e horários de cada sala.";
+  "Programação dos cinemas de rua de São Paulo e do Recife num só lugar: mapa, filmes em cartaz e horários de cada sala.";
 
 export const metadata: Metadata = {
   title: TITLE,

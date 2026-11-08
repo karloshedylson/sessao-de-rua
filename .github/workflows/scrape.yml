@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       adaptadores:
-        description: "Só estes cinemas, separados por espaço (belas spcine petrobras lt3 cinesala reserva marquise). Vazio = todos."
+        description: "Só estes, separados por espaço (belas spcine petrobras lt3 cinesala reserva marquise recife). Vazio = todos."
         required: false
         default: ""
 
@@ -49,6 +49,10 @@ jobs:
       - name: Coletar sessões
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          # Recife: endereço da planilha publicada em CSV. Sem o segredo, o adaptador "recife" é pulado.
+          SHEET_CSV_URL: ${{ secrets.SHEET_CSV_URL }}
+          # Cartazes que faltam, buscados no TMDB. Sem o segredo, esse passo é pulado.
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           ADAPTADORES: ${{ inputs.adaptadores }}
         # O Belas Artes (Cloudflare) responde 403 para os IPs do GitHub: fica fora da coleta agendada e é
         # atualizado a partir de uma máquina comum (`npm run scrape -- belas`, uma vez por semana).

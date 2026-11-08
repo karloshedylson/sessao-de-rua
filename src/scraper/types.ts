@@ -24,6 +24,8 @@ export type ScrapedSession = {
     genre?: string;
     /** URL absoluta da imagem do cartaz. */
     posterUrl?: string;
+    /** Id do filme no TMDB, quando alguém o informou (vence a busca automática). */
+    tmdbId?: number;
   };
 };
 
@@ -32,5 +34,7 @@ export interface CinemaAdapter {
   id: string;
   /** Cinemas (ids de `data/mock/cinemas.ts`) que esse adaptador cobre. */
   cinemaIds: string[];
+  /** Variáveis de ambiente necessárias. Se faltarem, a coleta agendada pula o adaptador sem contar como falha. */
+  requires?: string[];
   scrape(): Promise<ScrapedSession[]>;
 }

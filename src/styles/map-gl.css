@@ -29,7 +29,40 @@
   z-index: 5;
 }
 
-/* pino de cinema (marcador HTML) */
+/* pino de cinema (marcador HTML): formas do pino, número e animação de seleção */
+.pin-sh {
+  fill: rgba(27, 21, 20, 0.28);
+}
+.pin-b {
+  fill: #e3262e;
+  stroke: #fffdf8;
+  stroke-width: 2;
+}
+.pin-n {
+  font-size: 12.5px;
+  font-weight: 800;
+  fill: #ffffff;
+  text-anchor: middle;
+}
+.pin-pulse {
+  fill: none;
+  stroke: #f4b53f;
+  stroke-width: 3;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulse 1.6s ease-out infinite;
+}
+@keyframes pulse {
+  0% {
+    transform: scale(0.75);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
 .gl-pin {
   position: relative;
   width: 32px;
@@ -71,6 +104,41 @@
 }
 .gl-pin-lb.l {
   right: 34px;
+}
+.gl-pin-lb.t {
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.gl-pin-lb.b {
+  top: 46px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.gl-pin-lb.tr {
+  top: -22px;
+  left: 34px;
+}
+.gl-pin-lb.tl {
+  top: -22px;
+  right: 34px;
+}
+.gl-pin-lb.br {
+  top: 44px;
+  left: 34px;
+}
+.gl-pin-lb.bl {
+  top: 44px;
+  right: 34px;
+}
+/* Sem lugar livre ao redor: o nome só aparece ao passar o mouse (ou com o pino selecionado). */
+.gl-pin-lb.hide {
+  display: none;
+}
+.gl-pin:hover .gl-pin-lb.hide,
+.gl-pin.sel .gl-pin-lb.hide,
+.gl-pin:focus-visible .gl-pin-lb.hide {
+  display: block;
 }
 .gl-pin.zero .pin-b {
   fill: #a39684;

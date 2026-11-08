@@ -15,6 +15,20 @@
       "when": 1793923685420,
       "tag": "0001_modern_sebastian_shaw",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794093611641,
+      "tag": "0002_fast_lenny_balinger",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794097782705,
+      "tag": "0003_marvelous_meggan",
+      "breakpoints": true
     }
   ]
 }

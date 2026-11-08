@@ -2,7 +2,6 @@
 
 import { ChevronDownIcon, CloseIcon, PinIcon, SearchIcon } from "@/components/shared/icons";
 import { Poster, Rating } from "@/components/ui/poster";
-import { BAIRROS } from "@/data/mock/cinemas";
 import { dayLabels } from "@/features/explorer/lib/derive";
 import { useExplorer } from "@/features/explorer/components/explorer-provider";
 import type { GroupBy, LangFilter, Period } from "@/features/explorer/types";
@@ -50,7 +49,7 @@ function Segmented<T extends string>({
 }
 
 function FilterBar() {
-  const { state, patch } = useExplorer();
+  const { state, patch, city } = useExplorer();
   return (
     <div className="fbar">
       <label className="search">
@@ -72,7 +71,7 @@ function FilterBar() {
             aria-label="Bairro"
           >
             <option value="all">Todos os bairros</option>
-            {BAIRROS.map((b) => (
+            {city.bairros.map((b) => (
               <option key={b} value={b}>
                 {b}
               </option>
@@ -149,7 +148,8 @@ function CinemaCards() {
               <span className="tag">{cinema.tag}</span>
               <h3>{cinema.name}</h3>
               <p className="addr">
-                {cinema.addr} · {metroLabel(map.nearest[cinema.id])}
+                {cinema.addr}
+                {map.nearest[cinema.id] ? ` · ${metroLabel(map.nearest[cinema.id])}` : ""}
               </p>
             </div>
             <button

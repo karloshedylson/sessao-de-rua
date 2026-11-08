@@ -5,12 +5,12 @@ import { Poster } from "@/components/ui/poster";
 import { SmoothLink } from "@/components/ui/smooth-link";
 import { dayLabels } from "@/features/explorer/lib/derive";
 import { useExplorer } from "@/features/explorer/components/explorer-provider";
-import { METRO_LINES } from "@/features/map/data/metro";
 import { filmMeta } from "@/features/sessions/lib/labels";
-import { capitalize, pluralize, spellNumber } from "@/lib/format";
+import { pluralize } from "@/lib/format";
 
+/** Topo da página. Universal: não cita cidade nenhuma (o seletor de cidade fica no cabeçalho). */
 export function Hero() {
-  const { data, state, view, map, patch, scrollToSection } = useExplorer();
+  const { data, state, view, patch, scrollToSection } = useExplorer();
   const { short } = dayLabels(data.schedule.days[state.day], state.day);
   const dayWord = state.day === 0 ? "hoje" : state.day === 1 ? "amanhã" : "neste dia";
 
@@ -23,29 +23,19 @@ export function Hero() {
     scrollToSection("sessoes");
   };
 
-  // Caminhada entre duas salas citadas no texto de apoio (Belas Artes ↔ Espaço Augusta).
-  const walk = map.walkEdges.find(
-    (e) => (e.a === "belas" && e.b === "augusta") || (e.a === "augusta" && e.b === "belas"),
-  );
-
   return (
     <section className="hero" id="topo" aria-labelledby="hero-titulo">
       <div className="wrap">
         <div className="hero-in">
           <div>
-            <p className="eyebrow">Programação dos cinemas de rua · São Paulo</p>
+            <p className="eyebrow">Programação dos cinemas de rua</p>
             <div className="marquee">
               <h1 id="hero-titulo">
-                <span>Cinema</span>
+                <span>Sessão</span>
                 <span className="r">de rua</span>
               </h1>
-              <p className="marquee-sub">em São Paulo</p>
             </div>
-            <p className="lede">
-              {capitalize(spellNumber(data.cinemas.length))}{" "}
-              {data.cinemas.length === 1 ? "sala de rua" : "salas de rua"}, um só circuito. Veja no mapa como elas se
-              ligam pelo metrô, escolha a sessão e siga para o site do cinema.
-            </p>
+            <p className="lede">Veja no mapa como estão os filmes, escolha a sessão e saiba para onde ir.</p>
             <div className="cta">
               <SmoothLink className="btn btn-red" href="#mapa">
                 <MapIcon />
@@ -91,16 +81,6 @@ export function Hero() {
             <b>{view.todayCount}</b>
             <span>sessões ainda hoje</span>
           </li>
-          <li>
-            <b>{METRO_LINES.length}</b>
-            <span>linhas de metrô ligam as salas</span>
-          </li>
-          {walk && (
-            <li>
-              <b>{walk.min} min</b>
-              <span>a pé entre Belas Artes e Espaço Augusta</span>
-            </li>
-          )}
         </ul>
       </div>
     </section>
