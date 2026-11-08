@@ -1,6 +1,7 @@
 import type { CinemaAdapter } from "../types";
 import { belasAdapter } from "./belas";
 import { cinesalaAdapter } from "./cinesala";
+import { fundacaoAdapter } from "./fundacao";
 import { lt3Adapter } from "./lt3";
 import { marquiseAdapter } from "./marquise";
 import { petrobrasAdapter } from "./petrobras";
@@ -17,5 +18,6 @@ export const ADAPTERS: CinemaAdapter[] = [
   cinesalaAdapter,
   reservaAdapter,
   marquiseAdapter,
+  fundacaoAdapter,
   planilhaAdapter,
 ];

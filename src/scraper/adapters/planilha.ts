@@ -5,9 +5,10 @@ import { fetchHtml } from "../http";
 import { parseCsv, parseMinutes, parseRating, parseTime, prettyTitle } from "../text";
 import type { CinemaAdapter, ScrapedSession } from "../types";
 
-/** Cinemas do Recife: nenhum publica horários em formato lido por máquina, então vêm da planilha. */
+/** Cinemas do Recife que vêm da planilha. A Fundação (Derby, Porto, Museu) vem da Velox (adaptador `fundacao`). */
 const RECIFE = CINEMAS.filter((c) => c.city === "recife");
-const RECIFE_IDS = RECIFE.map((c) => c.id);
+const FROM_VELOX = new Set(["fundacao-derby", "fundacao-porto", "fundacao-museu"]);
+const RECIFE_IDS = RECIFE.map((c) => c.id).filter((id) => !FROM_VELOX.has(id));
 
 /** "Cinema São Luiz" → "cinema sao luiz": sem acento, minúsculo, pontuação vira espaço. */
 const looseKey = (s: string) =>
@@ -129,6 +130,7 @@ export const planilhaAdapter: CinemaAdapter = {
     const out: ScrapedSession[] = [];
     const seen = new Set<string>();
     let past = 0;
+    let skippedVelox = 0;
 
     table.slice(1).forEach((row, i) => {
       const line = i + 2; // número da linha na planilha (a 1 é o cabeçalho)
@@ -137,6 +139,10 @@ export const planilhaAdapter: CinemaAdapter = {
 
       const cinemaId = CINEMA_LOOKUP.get(looseKey(cell(row, "cinema")));
       if (!cinemaId) return fail(`cinema "${cell(row, "cinema")}" desconhecido (use um destes códigos: ${RECIFE_IDS.join(", ")})`);
+      if (FROM_VELOX.has(cinemaId)) {
+        skippedVelox++;
+        return;
+      }
       const day = parseDate(cell(row, "data"));
       if (!day) return fail(`data "${cell(row, "data")}" inválida (use dd/mm/aaaa)`);
       const time = parseHour(cell(row, "hora"));
@@ -204,6 +210,7 @@ export const planilhaAdapter: CinemaAdapter = {
     });
 
     if (past) console.log(`  (${past} linhas com data passada ignoradas)`);
+    if (skippedVelox) console.log(`  (${skippedVelox} linhas da Fundação ignoradas: essas sessões vêm da Velox; pode apagá-las da planilha)`);
     if (errors.length) {
       console.warn(`  ⚠ ${errors.length} linha(s) ignorada(s) por erro de preenchimento:`);
       for (const e of errors.slice(0, 25)) console.warn(`    - ${e}`);

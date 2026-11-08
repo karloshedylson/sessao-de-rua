@@ -7,12 +7,14 @@ import {
   useEffect,
   useMemo,
   useReducer,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
 import { CITIES, DEFAULT_CITY, isCityId, type CityConfig } from "@/features/cities/config";
 import { buildMapModel, type MapModel } from "@/features/map/lib/model";
 import { smoothScrollToId } from "@/lib/smooth-scroll";
+import { toMinutes } from "@/lib/time";
 import type { ScheduleData } from "@/services/sessions/repository";
 import type { CityId } from "@/types";
 import { deriveView, type ExplorerView } from "../lib/derive";
@@ -67,6 +69,20 @@ export function ExplorerProvider({ data: allData, children }: { data: ScheduleDa
     const fromUrl = new URLSearchParams(window.location.search).get("cidade");
     if (isCityId(fromUrl) && fromUrl !== DEFAULT_CITY) patch({ city: fromUrl });
   }, []);
+
+  // Dia pré-selecionado: se hoje já não tem sessões (todas passaram), abre no próximo dia que tiver. Roda uma vez
+  // por cidade (assim que a hora do usuário é conhecida), sem brigar com a escolha que a pessoa fizer depois.
+  const pickedFor = useRef<CityId | null>(null);
+  useEffect(() => {
+    if (nowMin < 0 || pickedFor.current === state.city) return;
+    pickedFor.current = state.city;
+    const ids = data.cinemas.map((c) => c.id);
+    const hasSessions = (day: number, from = 0) =>
+      ids.some((id) => (data.schedule.byDay[day]?.[id] ?? []).some((s) => s.times.some((t) => toMinutes(t) >= from)));
+    if (hasSessions(0, nowMin)) return patch({ day: 0 });
+    const next = data.schedule.byDay.findIndex((_, d) => d > 0 && hasSessions(d));
+    patch({ day: next > 0 ? next : 0 });
+  }, [nowMin, state.city, data]);
 
   const view = useMemo(() => deriveView(data, state, nowMin, map), [data, state, nowMin, map]);
 
