@@ -32,7 +32,7 @@ function markArrived(el: HTMLElement) {
 }
 
 function settle(id: string, el: HTMLElement | null, updateHash: boolean) {
-  if (updateHash) history.replaceState(null, "", id === "topo" ? window.location.pathname : `#${id}`);
+  if (updateHash) history.replaceState(null, "", id === "topo" ? window.location.pathname + window.location.search : `#${id}`);
   if (!el) return;
   if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
   el.focus({ preventScroll: true });

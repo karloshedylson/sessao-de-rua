@@ -1,3 +1,4 @@
+import { scoreOf } from "@/features/film-detail/lib/info";
 import type { Film } from "@/types";
 
 type Props = { film: Film; size?: "md" | "sm" };
@@ -31,10 +32,17 @@ export function Poster({ film, size = "md" }: Props) {
       </div>
     );
   }
+  const score = scoreOf(film);
+  const scoreBadge = score ? (
+    <span className="p-score" title={score.label} aria-label={score.label}>
+      <span aria-hidden="true">★ {score.text}</span>
+    </span>
+  ) : null;
   if (image) {
     return (
       <div className={`poster m-${motif} has-img`} style={style}>
         {image}
+        {scoreBadge}
         {(genre || film.rating) && (
           <span className="p-foot">
             {genre ? <span className="p-genre">{genre}</span> : <span />}
@@ -46,6 +54,7 @@ export function Poster({ film, size = "md" }: Props) {
   }
   return (
     <div className={`poster m-${motif}`} style={style} role="img" aria-label={`Cartaz de ${film.title}`}>
+      {scoreBadge}
       <span />
       <span className="p-foot">
         {genre ? <span className="p-title">{genre}</span> : <span />}

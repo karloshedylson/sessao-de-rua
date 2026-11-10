@@ -10,7 +10,7 @@ import { pluralize } from "@/lib/format";
 
 /** Topo da página. Universal: não cita cidade nenhuma (o seletor de cidade fica no cabeçalho). */
 export function Hero() {
-  const { data, state, view, patch, scrollToSection } = useExplorer();
+  const { data, state, view, go } = useExplorer();
   const { short } = dayLabels(data.schedule.days[state.day], state.day);
   const dayWord = state.day === 0 ? "hoje" : state.day === 1 ? "amanhã" : "neste dia";
 
@@ -19,8 +19,7 @@ export function Hero() {
 
   const pickFeatured = () => {
     if (!film) return;
-    patch({ selectedFilm: film.id, selectedCinema: null, route: null });
-    scrollToSection("sessoes");
+    go("/sessoes", { selectedFilm: film.id, selectedCinema: null, route: null });
   };
 
   return (

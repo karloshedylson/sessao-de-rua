@@ -14,7 +14,7 @@ export type Cinema = {
   lat: number;
   lng: number;
   /** Classificação editorial exibida na etiqueta vermelha. */
-  tag: string;
+  tag: string; // vazio = sem etiqueta
   /** Preço da inteira em reais (0 = gratuito). Não é exibido hoje. */
   fullPrice: number;
   /** Lado preferido do rótulo do pino no mapa (1 = direita, -1 = esquerda); se colidir, o mapa escolhe outro lado. */

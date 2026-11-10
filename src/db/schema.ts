@@ -6,6 +6,7 @@ import {
   integer,
   pgEnum,
   pgTable,
+  real,
   serial,
   text,
   time,
@@ -54,6 +55,13 @@ export const films = pgTable(
     tmdbId: integer("tmdb_id"),
     /** Última consulta ao TMDB, com ou sem sucesso (evita repetir buscas sem resultado). */
     tmdbCheckedAt: timestamp("tmdb_checked_at", { withTimezone: true }),
+    /** Sinopse em português, do TMDB. */
+    synopsis: text("synopsis"),
+    /** Direção (nomes separados por vírgula), do TMDB. */
+    director: text("director"),
+    /** Nota média dos usuários do TMDB (0 a 10) e quantos votos a compõem. */
+    tmdbScore: real("tmdb_score"),
+    tmdbVotes: integer("tmdb_votes"),
   },
   (t) => [uniqueIndex("films_title_key_idx").on(t.titleKey)],
 );

@@ -138,14 +138,14 @@ function ActiveChips() {
 }
 
 function CinemaCards() {
-  const { map, view, patch, scrollToSection } = useExplorer();
+  const { map, view, go } = useExplorer();
   return (
     <div className="sgrid">
       {view.visible.map(({ cinema, items }) => (
         <article key={cinema.id} className="scard">
           <header className="scard-h">
             <div>
-              <span className="tag">{cinema.tag}</span>
+              {cinema.tag && <span className="tag">{cinema.tag}</span>}
               <h3>{cinema.name}</h3>
               <p className="addr">
                 {cinema.addr}
@@ -155,10 +155,7 @@ function CinemaCards() {
             <button
               type="button"
               className="mini"
-              onClick={() => {
-                patch({ selectedCinema: cinema.id });
-                scrollToSection("mapa");
-              }}
+              onClick={() => go("/", { selectedCinema: cinema.id }, "#mapa")}
             >
               <PinIcon />
               No mapa
@@ -242,7 +239,7 @@ export function SessionsSection() {
         <div className="sec-head">
           <div>
             <p className="eyebrow">Programação</p>
-            <h2 id="sessoes-titulo">Sessões</h2>
+            <h1 id="sessoes-titulo">Sessões</h1>
           </div>
           <div className="fld">
             <span>Ver por</span>

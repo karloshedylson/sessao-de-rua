@@ -18,6 +18,8 @@ export type ExplorerState = {
   selectedCinema: string | null;
   /** Filme escolhido no cartaz. */
   selectedFilm: string | null;
+  /** Filme aberto na janela "Sobre o filme". */
+  detailFilm: string | null;
   /** Roteiro ativo. */
   route: string | null;
 };
@@ -32,5 +34,6 @@ export const INITIAL_STATE: ExplorerState = {
   groupBy: "cinema",
   selectedCinema: null,
   selectedFilm: null,
+  detailFilm: null,
   route: null,
 };

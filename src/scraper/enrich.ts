@@ -1,4 +1,4 @@
-import { and, eq, exists, gte, isNull, lt, or, sql } from "drizzle-orm";
+import { and, eq, exists, gte, isNotNull, isNull, lt, or, sql } from "drizzle-orm";
 import { db } from "@/db/client";
 import { films, sessions } from "@/db/schema";
 import { todayInSaoPaulo } from "@/lib/time";
@@ -14,7 +14,7 @@ const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
  * TMDB → cartaz do cinema → nenhum (cartaz ilustrado). Por isso o cartaz do TMDB vai para a própria coluna
  * (`poster_tmdb_url`) e o do cinema (`poster_url`) fica intacto, como reserva.
  *
- * Quem já tem cartaz do TMDB não é consultado de novo. Quem não foi encontrado só é consultado de novo depois de
+ * Junto do cartaz vêm a sinopse, a direção e a nota (TMDB). Quem já tem tudo isso não é consultado de novo. Quem não foi encontrado só é consultado de novo depois de
  * 14 dias; erros de rede não contam como consulta. Só se completa o que está vazio (ano, duração, gênero).
  */
 export async function enrichFilms(key: string): Promise<{ found: number; notFound: string[]; failed: number }> {
@@ -27,7 +27,11 @@ export async function enrichFilms(key: string): Promise<{ found: number; notFoun
     .from(films)
     .where(
       and(
-        isNull(films.posterTmdbUrl),
+        // Falta o cartaz do TMDB, ou o filme já foi achado mas ainda sem sinopse, direção e nota (preenchimento).
+        or(
+          isNull(films.posterTmdbUrl),
+          and(isNotNull(films.tmdbId), isNull(films.synopsis), isNull(films.director), isNull(films.tmdbScore)),
+        ),
         or(isNull(films.tmdbCheckedAt), lt(films.tmdbCheckedAt, cutoff)),
         exists(db.select({ one: sql`1` }).from(sessions).where(and(eq(sessions.filmId, films.id), gte(sessions.day, today)))),
       ),
@@ -43,17 +47,23 @@ export async function enrichFilms(key: string): Promise<{ found: number; notFoun
     try {
       const match = await resolveFilm({ title: film.title, year: film.year, tmdbId: film.tmdbId, minutes: film.minutes }, api);
       consecutiveFailures = 0;
-      if (!match || !match.posterUrl) {
-        await db.update(films).set({ tmdbCheckedAt: new Date(), ...(match ? { tmdbId: match.tmdbId } : {}) }).where(eq(films.id, film.id));
-        notFound.push(match ? `${film.title} (achado no TMDB, mas sem imagem de cartaz)` : film.title);
+      if (!match) {
+        await db.update(films).set({ tmdbCheckedAt: new Date() }).where(eq(films.id, film.id));
+        notFound.push(film.title);
         continue;
       }
+      if (!match.posterUrl) notFound.push(`${film.title} (achado no TMDB, mas sem imagem de cartaz)`);
       await db
         .update(films)
         .set({
-          posterTmdbUrl: match.posterUrl,
+          ...(match.posterUrl ? { posterTmdbUrl: match.posterUrl } : {}),
           tmdbId: match.tmdbId,
           tmdbCheckedAt: new Date(),
+          // Sinopse, direção e nota vêm sempre do TMDB (a nota muda com o tempo, então é atualizada).
+          synopsis: match.synopsis,
+          director: match.director,
+          tmdbScore: match.score,
+          tmdbVotes: match.votes,
           ...(film.year === null && match.year ? { year: match.year } : {}),
           ...(film.minutes === null && match.minutes ? { minutes: match.minutes } : {}),
           ...(film.genre === null && match.genre ? { genre: match.genre } : {}),

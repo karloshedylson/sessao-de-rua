@@ -38,10 +38,10 @@
   animation-delay: 350ms;
 }
 
-[data-arrived] .sec-head h2 {
+[data-arrived] .sec-head :is(h1, h2) {
   position: relative;
 }
-[data-arrived] .sec-head h2::after {
+[data-arrived] .sec-head :is(h1, h2)::after {
   content: "";
   position: absolute;
   left: 0;
@@ -62,7 +62,7 @@ section[tabindex="-1"]:focus {
 
 @media (prefers-reduced-motion: reduce) {
   [data-arrived] > .wrap > *,
-  [data-arrived] .sec-head h2::after {
+  [data-arrived] .sec-head :is(h1, h2)::after {
     animation: none;
   }
 }

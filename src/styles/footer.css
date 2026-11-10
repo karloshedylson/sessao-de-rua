@@ -1,7 +1,6 @@
 /* footer */
 .foot {
   padding: 48px 0 28px;
-  border-top: 4px solid var(--red);
   background: #0a0808;
   color: var(--mutedD);
   font-size: 14px;

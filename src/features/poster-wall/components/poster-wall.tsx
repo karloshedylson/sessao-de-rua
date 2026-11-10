@@ -7,7 +7,7 @@ import { joinMeta, languageLabel } from "@/features/sessions/lib/labels";
 import { pluralize } from "@/lib/format";
 
 export function PosterWall() {
-  const { data, state, view, patch, scrollToSection } = useExplorer();
+  const { data, state, view, patch, go } = useExplorer();
   const { long } = dayLabels(data.schedule.days[state.day], state.day);
 
   return (
@@ -18,6 +18,9 @@ export function PosterWall() {
             <p className="eyebrow">Em cartaz</p>
             <h2 id="cartaz-titulo">Filmes de {long}</h2>
           </div>
+          <button type="button" className="btn btn-ghost btn-sm" onClick={() => go("/sessoes", { selectedFilm: null })}>
+            Ver todas as sessões
+          </button>
         </div>
         {view.filmStats.length === 0 ? (
           <div className="poster-empty">
@@ -37,11 +40,9 @@ export function PosterWall() {
                 <button
                   type="button"
                   className="fbtn"
-                  aria-label={`Ver sessões de ${film.title}`}
-                  onClick={() => {
-                    patch({ selectedFilm: film.id, selectedCinema: null, route: null });
-                    scrollToSection("sessoes");
-                  }}
+                  aria-label={`Ver detalhes e sessões de ${film.title}`}
+                  aria-haspopup="dialog"
+                  onClick={() => patch({ detailFilm: film.id })}
                 >
                   <Poster film={film} />
                 </button>

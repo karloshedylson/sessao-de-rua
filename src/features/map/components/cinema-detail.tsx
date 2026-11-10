@@ -1,7 +1,6 @@
 "use client";
 
 import { ChevronLeftIcon, PinIcon } from "@/components/shared/icons";
-import { SmoothLink } from "@/components/ui/smooth-link";
 import { useExplorer } from "@/features/explorer/components/explorer-provider";
 import { dayLabels } from "@/features/explorer/lib/derive";
 import { cinemaHref, findSessionLink, mapsHref, sessionTarget, targetLabel } from "@/features/sessions/lib/labels";
@@ -10,7 +9,7 @@ import { toMinutes } from "@/lib/time";
 
 /** Painel de detalhe do cinema selecionado: metrô, vizinhos a pé e próximas sessões. */
 export function CinemaDetail({ onSelect }: { onSelect: (id: string) => void }) {
-  const { data, map, state, view, patch } = useExplorer();
+  const { data, map, state, view, patch, go } = useExplorer();
   const id = state.selectedCinema;
   const cinema = data.cinemas.find((c) => c.id === id);
   if (!cinema) return null;
@@ -39,7 +38,7 @@ export function CinemaDetail({ onSelect }: { onSelect: (id: string) => void }) {
         <ChevronLeftIcon />
         Todos os cinemas
       </button>
-      <span className="tag">{cinema.tag}</span>
+      {cinema.tag && <span className="tag">{cinema.tag}</span>}
       <h3>{cinema.name}</h3>
       <p className="addr">
         {cinema.addr} · {cinema.bairro}
@@ -101,9 +100,9 @@ export function CinemaDetail({ onSelect }: { onSelect: (id: string) => void }) {
       )}
 
       <div className="detail-actions">
-        <SmoothLink className="btn btn-red btn-sm" href="#sessoes">
+        <button type="button" className="btn btn-red btn-sm" onClick={() => go("/sessoes")}>
           Programação completa
-        </SmoothLink>
+        </button>
         <a className="btn btn-ghost btn-sm" href={mapsHref(cinema)} target="_blank" rel="noopener noreferrer">
           <PinIcon dot={false} />
           Como chegar

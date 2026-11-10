@@ -1,5 +1,11 @@
-/* nav */
+/* nav: fixo no topo em todas as páginas. A barra de dias e as âncoras descontam esta altura (`--nav-h`). */
+.site {
+  --nav-h: 71px;
+}
 .nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
   background: var(--ink);
   border-bottom: 1px solid var(--lineD);
 }
@@ -76,4 +82,9 @@
 .nav-links a:hover {
   background: var(--ink3);
   color: var(--paper);
+}
+/* Página atual no menu. */
+.nav-links a[aria-current="page"] {
+  background: var(--ink3);
+  box-shadow: inset 0 -2px 0 var(--gold);
 }

@@ -1,14 +1,14 @@
-import { DayBar } from "@/components/layout/day-bar";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { ExplorerProvider } from "@/features/explorer/components/explorer-provider";
-import { Hero } from "@/features/hero/components/hero";
-import { MapSection } from "@/features/map/components/map-section";
-import { PosterWall } from "@/features/poster-wall/components/poster-wall";
-import { SessionsSection } from "@/features/sessions/components/sessions-section";
+import { FilmDialog } from "@/features/film-detail/components/film-dialog";
 import { getScheduleData } from "@/services/sessions";
 
-export default async function HomePage() {
+/**
+ * Moldura das páginas do site (início e sessões). O provedor fica aqui, e não em cada página, para o estado
+ * (cidade, dia, filme e cinema escolhidos) continuar o mesmo quando a pessoa navega entre elas.
+ */
+export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const data = await getScheduleData();
 
   return (
@@ -21,14 +21,9 @@ export default async function HomePage() {
       </a>
       <ExplorerProvider data={data}>
         <SiteHeader />
-        <main id="conteudo">
-          <Hero />
-          <DayBar />
-          <MapSection />
-          <PosterWall />
-          <SessionsSection />
-        </main>
+        {children}
         <SiteFooter />
+        <FilmDialog />
       </ExplorerProvider>
     </div>
   );

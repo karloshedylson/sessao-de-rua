@@ -1,7 +1,8 @@
 /* sections */
 .sec {
   padding: 64px 0;
-  scroll-margin-top: 86px;
+  /* Cabeçalho fixo + barra de dias ficam por cima: a rolagem para a âncora para abaixo deles. */
+  scroll-margin-top: calc(var(--nav-h) + 86px);
 }
 .sec-head {
   display: flex;
@@ -11,6 +12,7 @@
   gap: 18px 28px;
   margin-bottom: 22px;
 }
+.sec h1,
 .sec h2 {
   margin: 0;
   font-family: var(--font-anton), Impact, sans-serif;

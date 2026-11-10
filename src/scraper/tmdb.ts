@@ -20,6 +20,11 @@ export type TmdbSearchResult = {
 export type TmdbDetails = TmdbSearchResult & {
   runtime?: number | null;
   genres?: { id: number; name: string }[];
+  overview?: string | null;
+  vote_average?: number | null;
+  vote_count?: number | null;
+  /** Vem junto na mesma chamada (`append_to_response=credits`). */
+  credits?: { crew?: { job?: string; name?: string }[] };
 };
 
 /** Acesso à API; injetável para testar a lógica sem rede. */
@@ -44,6 +49,11 @@ export type FilmMatch = {
   year: number | null;
   minutes: number | null;
   genre: string | null;
+  synopsis: string | null;
+  director: string | null;
+  /** Nota média (0–10) e número de votos; null quando ninguém votou. */
+  score: number | null;
+  votes: number | null;
   /** Título que o TMDB usa (para conferir a olho no log). */
   matchedTitle: string;
 };
@@ -88,6 +98,13 @@ export function pickBest(results: TmdbSearchResult[], wantedTitle: string, year:
   return fits.sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0))[0] ?? null;
 }
 
+/** Nomes de quem dirigiu (cargo "Director"), sem repetir, no máximo três. Null se o TMDB não informa. */
+export function directorsOf(d: TmdbDetails): string | null {
+  const names = (d.credits?.crew ?? []).filter((c) => c.job === "Director" && c.name).map((c) => c.name!.trim());
+  const unique = [...new Set(names)].slice(0, 3);
+  return unique.length ? unique.join(", ") : null;
+}
+
 /** Procura o filme (ou usa o id informado à mão) e devolve cartaz e metadados, ou null se não achou com certeza. */
 export async function resolveFilm(film: FilmLookup, api: TmdbApi): Promise<FilmMatch | null> {
   let id = film.tmdbId;
@@ -113,6 +130,10 @@ export async function resolveFilm(film: FilmLookup, api: TmdbApi): Promise<FilmM
     year: yearOf(d.release_date),
     minutes: d.runtime && d.runtime > 0 ? d.runtime : null,
     genre: d.genres?.length ? d.genres.slice(0, 2).map((g) => g.name).join(", ") : null,
+    synopsis: d.overview?.trim() || null,
+    director: directorsOf(d),
+    score: d.vote_count && d.vote_count > 0 && d.vote_average ? Math.round(d.vote_average * 10) / 10 : null,
+    votes: d.vote_count && d.vote_count > 0 ? d.vote_count : null,
     matchedTitle: d.title ?? d.original_title ?? "",
   };
 }
@@ -143,6 +164,6 @@ export function createTmdbApi(key: string): TmdbApi {
       });
       return data?.results ?? [];
     },
-    details: (id) => get<TmdbDetails>(`/movie/${id}`, { language: "pt-BR" }),
+    details: (id) => get<TmdbDetails>(`/movie/${id}`, { language: "pt-BR", append_to_response: "credits" }),
   };
 }

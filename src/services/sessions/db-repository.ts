@@ -39,6 +39,10 @@ export const dbSessionsRepository: SessionsRepository = {
         genre: films.genre,
         posterUrl: films.posterUrl,
         posterTmdbUrl: films.posterTmdbUrl,
+        synopsis: films.synopsis,
+        director: films.director,
+        tmdbScore: films.tmdbScore,
+        tmdbVotes: films.tmdbVotes,
       })
       .from(sessions)
       .innerJoin(films, eq(sessions.filmId, films.id))
@@ -67,6 +71,10 @@ export const dbSessionsRepository: SessionsRepository = {
           poster: posterFor(r.title),
           // Prioridade: cartaz do TMDB → cartaz do cinema → nenhum (o front cai no cartaz ilustrado).
           posterUrl: r.posterTmdbUrl ?? r.posterUrl,
+          synopsis: r.synopsis,
+          director: r.director,
+          tmdbScore: r.tmdbScore,
+          tmdbVotes: r.tmdbVotes,
         });
       }
 

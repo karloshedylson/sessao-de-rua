@@ -17,4 +17,10 @@ export type Film = {
   poster: { bg: string; fg: string; motif: PosterMotif };
   /** Imagem real do cartaz, quando o cinema de origem a publica. */
   posterUrl?: string | null;
+  /** Dados do TMDB (opcionais: só existem quando o filme foi identificado lá). */
+  synopsis?: string | null;
+  director?: string | null;
+  /** Nota média dos usuários do TMDB (0–10) e número de votos. */
+  tmdbScore?: number | null;
+  tmdbVotes?: number | null;
 };

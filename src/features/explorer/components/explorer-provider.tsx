@@ -11,6 +11,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { CITIES, DEFAULT_CITY, isCityId, type CityConfig } from "@/features/cities/config";
 import { buildMapModel, type MapModel } from "@/features/map/lib/model";
 import { smoothScrollToId } from "@/lib/smooth-scroll";
@@ -34,9 +35,27 @@ type ExplorerContextValue = {
   resetFilters: () => void;
   /** Rola suavemente até uma seção (respeita `prefers-reduced-motion`). */
   scrollToSection: (id: string) => void;
+  /** Aplica o estado e vai para outra página do site (se já estiver nela, só aplica o estado). */
+  go: (path: "/" | "/sessoes", partial?: Partial<ExplorerState>, hash?: string) => void;
 };
 
 const ExplorerContext = createContext<ExplorerContextValue | null>(null);
+
+/**
+ * Query do endereço a partir do estado: valores padrão ficam de fora (`""` quando não sobra nada). A cidade vale
+ * para o site todo; dia, filme e cinema só entram na página de sessões (é ali que o link precisa ser compartilhável).
+ */
+function buildQuery(state: ExplorerState, days: string[], path: string): string {
+  const q = new URLSearchParams();
+  if (state.city !== DEFAULT_CITY) q.set("cidade", state.city);
+  if (path === "/sessoes") {
+    if (state.day > 0 && days[state.day]) q.set("dia", days[state.day]);
+    if (state.selectedFilm) q.set("filme", state.selectedFilm);
+    if (state.selectedCinema) q.set("cinema", state.selectedCinema);
+  }
+  const s = q.toString();
+  return s ? `?${s}` : "";
+}
 
 function reducer(state: ExplorerState, partial: Partial<ExplorerState>): ExplorerState {
   return { ...state, ...partial };
@@ -64,15 +83,57 @@ export function ExplorerProvider({ data: allData, children }: { data: ScheduleDa
     return () => window.clearInterval(id);
   }, []);
 
-  // `?cidade=recife` abre direto na cidade (o servidor sempre renderiza a padrão).
+  const router = useRouter();
+  const pathname = usePathname();
+  const pickedFor = useRef<CityId | null>(null);
+  // "idle" → ainda não leu a URL; "pending" → leu, mas o estado lido ainda não foi aplicado; "ready" → pode escrever.
+  const urlSync = useRef<"idle" | "pending" | "ready">("idle");
+  /** Página para a qual uma navegação está em andamento (enquanto não chega, a URL não é reescrita). */
+  const navTarget = useRef<string | null>(null);
+
+  // A URL guarda cidade, dia, filme e cinema (`?cidade=recife&dia=2026-11-10&filme=12&cinema=ufpe`): o servidor
+  // sempre renderiza o estado padrão e o cliente aplica o que veio no endereço. Ids que não existem são ignorados.
   useEffect(() => {
-    const fromUrl = new URLSearchParams(window.location.search).get("cidade");
-    if (isCityId(fromUrl) && fromUrl !== DEFAULT_CITY) patch({ city: fromUrl });
-  }, []);
+    const q = new URLSearchParams(window.location.search);
+    const cinema = allData.cinemas.find((c) => c.id === q.get("cinema"));
+    const film = allData.films.find((f) => f.id === q.get("filme"));
+    const fromUrl = q.get("cidade");
+    const city = cinema?.city ?? (isCityId(fromUrl) ? fromUrl : DEFAULT_CITY);
+    const day = allData.schedule.days.indexOf(q.get("dia") ?? "");
+
+    const next: Partial<ExplorerState> = {};
+    if (city !== DEFAULT_CITY) next.city = city;
+    if (cinema) next.selectedCinema = cinema.id;
+    if (film) next.selectedFilm = film.id;
+    if (day >= 0) {
+      next.day = day;
+      pickedFor.current = city; // o dia do link vale mais que a pré-seleção automática
+    }
+    urlSync.current = "pending";
+    if (Object.keys(next).length) patch(next);
+  }, [allData]);
+
+  // Mantém a URL em dia com o estado, sem criar entradas no histórico (quem cria é a navegação entre páginas).
+  useEffect(() => {
+    if (urlSync.current === "idle") return;
+    if (urlSync.current === "pending") {
+      urlSync.current = "ready"; // primeira passada: o estado lido da URL ainda não chegou
+      return;
+    }
+    // Navegação em andamento: escrever agora, com a página antiga, cancelaria a troca. Espera chegar na nova.
+    if (navTarget.current) {
+      if (pathname !== navTarget.current) return;
+      navTarget.current = null;
+    }
+    const qs = buildQuery(state, allData.schedule.days, pathname);
+    const url = `${window.location.pathname}${qs}${window.location.hash}`;
+    if (url !== `${window.location.pathname}${window.location.search}${window.location.hash}`) {
+      window.history.replaceState(null, "", url);
+    }
+  }, [pathname, state.city, state.day, state.selectedFilm, state.selectedCinema, allData.schedule.days]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Dia pré-selecionado: se hoje já não tem sessões (todas passaram), abre no próximo dia que tiver. Roda uma vez
   // por cidade (assim que a hora do usuário é conhecida), sem brigar com a escolha que a pessoa fizer depois.
-  const pickedFor = useRef<CityId | null>(null);
   useEffect(() => {
     if (nowMin < 0 || pickedFor.current === state.city) return;
     pickedFor.current = state.city;
@@ -101,18 +162,28 @@ export function ExplorerProvider({ data: allData, children }: { data: ScheduleDa
   );
 
   const setCity = useCallback((id: CityId) => {
-    patch({ city: id, selectedCinema: null, selectedFilm: null, route: null, bairro: "all", query: "" });
-    const url = new URL(window.location.href);
-    if (id === DEFAULT_CITY) url.searchParams.delete("cidade");
-    else url.searchParams.set("cidade", id);
-    window.history.replaceState(null, "", url);
+    patch({ city: id, selectedCinema: null, selectedFilm: null, detailFilm: null, route: null, bairro: "all", query: "" });
   }, []);
 
   const scrollToSection = useCallback((id: string) => smoothScrollToId(id), []);
 
+  const go = useCallback(
+    (path: "/" | "/sessoes", partial: Partial<ExplorerState> = {}, hash = "") => {
+      if (path === pathname) {
+        patch(partial); // já está lá: quem chamou cuida da rolagem
+        return;
+      }
+      navTarget.current = path;
+      patch(partial);
+      // A query já vai completa na navegação, para a entrada do histórico nascer com o endereço certo.
+      router.push(`${path}${buildQuery({ ...state, ...partial }, allData.schedule.days, path)}${hash}`);
+    },
+    [pathname, router, state, allData.schedule.days],
+  );
+
   const value = useMemo(
-    () => ({ data, city, map, state, view, patch, setCity, resetFilters, scrollToSection }),
-    [data, city, map, state, view, setCity, resetFilters, scrollToSection],
+    () => ({ data, city, map, state, view, patch, go, setCity, resetFilters, scrollToSection }),
+    [data, city, map, state, view, go, setCity, resetFilters, scrollToSection],
   );
 
   return <ExplorerContext.Provider value={value}>{children}</ExplorerContext.Provider>;

@@ -1,0 +1,224 @@
+/* Selo de nota no cartaz: legível sobre qualquer foto (fundo escuro), discreto, no canto oposto ao da categoria. */
+.poster > .p-score {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  padding: 4px 7px;
+  border-radius: 5px;
+  background: rgba(14, 12, 12, 0.82);
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+}
+/* Na janela, nota, gênero e classificação já estão ao lado do cartaz: sem repetir por cima da imagem. */
+.fdlg .p-score,
+.fdlg .poster.has-img .p-foot {
+  display: none;
+}
+
+/* Janela */
+.fdlg {
+  width: min(760px, calc(100vw - 32px));
+  max-height: min(88dvh, 720px);
+  margin: auto;
+  padding: 0;
+  border: 1px solid #3a302d;
+  border-radius: 14px;
+  background: #1b1514;
+  color: #f4ecdd;
+  overflow: auto;
+  overscroll-behavior: contain;
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.8);
+}
+.fdlg::backdrop {
+  background: rgba(14, 12, 12, 0.72);
+  backdrop-filter: blur(2px);
+}
+.fdlg[open] {
+  animation: fdlg-in 0.22s ease-out;
+}
+@keyframes fdlg-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+body:has(dialog.fdlg[open]) {
+  overflow: hidden;
+}
+.fdlg-in {
+  position: relative;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  grid-template-areas:
+    "poster head"
+    "poster text";
+  grid-template-rows: auto 1fr;
+  align-content: start;
+  gap: 4px 28px;
+  padding: 28px;
+}
+.fdlg-poster {
+  grid-area: poster;
+  align-self: start;
+}
+.fdlg-head {
+  grid-area: head;
+  min-width: 0;
+  padding-right: 36px;
+}
+.fdlg-text {
+  grid-area: text;
+  min-width: 0;
+}
+.fdlg h2 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+.fdlg-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0 0;
+  color: #bdb2a6;
+  font-size: 14px;
+}
+.fdlg-score {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 6px;
+  margin: 14px 0 0;
+}
+.fdlg-score strong {
+  color: #f4b53f;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+}
+.fdlg-score .of {
+  color: #bdb2a6;
+  font-size: 14px;
+}
+.fdlg-score small {
+  flex-basis: 100%;
+  color: #bdb2a6;
+  font-size: 12px;
+}
+.fdlg-fact {
+  display: grid;
+  gap: 2px;
+  margin: 14px 0 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+.fdlg-fact span {
+  color: #bdb2a6;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.fdlg-text h3 {
+  margin: 18px 0 6px;
+  color: #bdb2a6;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.fdlg-syn {
+  max-width: 60ch;
+  margin: 0;
+  font-size: 15.5px;
+  line-height: 1.65;
+}
+.fdlg-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  margin-top: 24px;
+}
+.fdlg-cta small,
+.fdlg-none {
+  margin: 0;
+  color: #bdb2a6;
+  font-size: 12px;
+}
+.fdlg-x {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #f4ecdd;
+}
+.fdlg-x:hover {
+  background: rgba(244, 236, 221, 0.12);
+}
+.fdlg-x svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Celular: folha ancorada na base; o cartaz fica pequeno ao lado do título e o texto ocupa a largura toda. */
+@media (max-width: 640px) {
+  .fdlg {
+    width: 100vw;
+    max-width: none;
+    max-height: 90dvh;
+    margin: auto 0 0;
+    border-radius: 16px 16px 0 0;
+    border-width: 1px 0 0;
+  }
+  .fdlg[open] {
+    animation-name: fdlg-up;
+  }
+  .fdlg-in {
+    grid-template-columns: 108px 1fr;
+    grid-template-areas:
+      "poster head"
+      "text text";
+    grid-template-rows: auto auto;
+    gap: 6px 16px;
+    padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+  }
+  .fdlg h2 {
+    font-size: 21px;
+  }
+  .fdlg-score strong {
+    font-size: 26px;
+  }
+  .fdlg-cta .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .fdlg-text {
+    margin-top: 10px;
+  }
+}
+@keyframes fdlg-up {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fdlg[open] {
+    animation: none;
+  }
+}
